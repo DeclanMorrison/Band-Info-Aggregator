@@ -1,5 +1,5 @@
-#REMEMBER TO BRANCH THE REPO ANY TIME YOU WANT TO IMPLEMENT A FEATURE
-#[HERE IS A LINK TO THE TRELLO BOARD](https://trello.com/b/h4YFbCJP/band-info-aggregator)
+# REMEMBER TO BRANCH THE REPO ANY TIME YOU WANT TO IMPLEMENT A FEATURE
+# [HERE IS A LINK TO THE TRELLO BOARD](https://trello.com/b/h4YFbCJP/band-info-aggregator)
 
 
 # First Project Proposal

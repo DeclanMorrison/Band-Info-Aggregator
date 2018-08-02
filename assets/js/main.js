@@ -1,30 +1,11 @@
 $(document).ready(function() {
 //=============================================================
 
-//              Notes for lyric API
-
-//=============================================================
-
-    // // Grab artist name from what is clicked (not an input)
-    // let artistName2 = "watsky";
-
-    // // Grab song name same way
-    // let songName2 = "Tiny Glowing Screens, Pt. 3";
-
-    // // Allows spaces eg. ".../coldplay/adventure of a life time", %20 workds aswell, NEEDS SPACES (toLowerCase)
-    // let queryURL2 = `https://api.lyrics.ovh/v1/${artistName2}/${songName2}`;
-
-    // $.ajax({
-    //     url: queryURL2,
-    //     method: "GET"
-    // }).then(function (response2) {
-    //     console.log(response2);
-    //     $(".displayPar").text(response2.lyrics);
-    // });
-
-//=============================================================
-
 // Ctrl + F to find "Temporary", These will be things that still need changed to work with final product
+
+//=============================================================
+
+//              Functions
 
 //=============================================================
 
@@ -104,11 +85,11 @@ $(document).ready(function() {
     // Called when album is clicked
     function TEMPitunesSongAJAX() {
         // Shorthand
-        let $this = $(this);
-        let albumName = $this.attr("data-album-name");
-        let albumLength = $this.attr("data-album-length");
-        let artistName = $this.attr("data-artist-name");
-        let $albumIndex = $(".album" + $this.attr("data-index"));
+        let $thisAlbum = $(this);
+        let albumName = $thisAlbum.attr("data-album-name");
+        let albumLength = $thisAlbum.attr("data-album-length");
+        let albumArtistName = $thisAlbum.attr("data-artist-name");
+        let $albumIndex = $(".album" + $thisAlbum.attr("data-index"));
 
         // Query for Song search, limits to album length
         let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
@@ -125,9 +106,9 @@ $(document).ready(function() {
             let songResults = parsedSongResponse.results;
 
             // If the data-state is open it empties the song div
-            if($this.attr("data-state") === "open") {
+            if($thisAlbum.attr("data-state") === "open") {
                 // Sets data-state to closed
-                $this.attr("data-state", "closed");
+                $thisAlbum.attr("data-state", "closed");
                 $albumIndex.empty();
             }
 
@@ -143,15 +124,34 @@ $(document).ready(function() {
                     $songNamePar.text(value.trackCensoredName);
 
                     // Adds attributes for[song-name, artist-name], adds class of songDiv, appends songNamePar
-                    $songNameDiv.attr("data-song-name", value.trackCensoredName).attr("data-artist-name", artistName).addClass("songDiv").append($songNamePar);
+                    $songNameDiv.attr("data-song-name", value.trackCensoredName).attr("data-artist-name", albumArtistName).addClass("songDiv").append($songNamePar);
 
                     // Appends the Song name div to the empty song div
                     $albumIndex.append($songNameDiv);
                     
                     // Sets the attribute of data-state to open
-                    $this.attr("data-state", "open")
+                    $thisAlbum.attr("data-state", "open")
                 });
             }
+        });
+    }
+
+    function TEMPlyricsAJAX() {
+        let $thisSong = $(this);
+        let songArtistName = $thisSong.attr("data-artist-name");
+        let songName = $thisSong.attr("data-song-name");
+        const $lyricsDiv = $(".tempLyricsDiv");
+        $lyricsDiv.addClass("line-break lyricsDiv").empty();
+        
+        // // Allows spaces eg. ".../coldplay/adventure of a life time", %20 workds aswell, NEEDS SPACES (toLowerCase)
+        let queryURL2 = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
+
+        $.ajax({
+            url: queryURL2,
+            method: "GET"
+        }).then(function (lyricsResponse) {
+            console.log(lyricsResponse);
+            $lyricsDiv.text(lyricsResponse.lyrics)
         });
     }
 

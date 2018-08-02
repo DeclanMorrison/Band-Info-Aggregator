@@ -27,10 +27,32 @@ $(document).ready(function() {
 // Ctrl + F to find "Temporary", These will be things that still need changed to work with final product
 
 //=============================================================
+    const database_config = () => {
+        //configuring database
+        var config = {
+            apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
+            authDomain: "band-aggregator.firebaseapp.com",
+            databaseURL: "https://band-aggregator.firebaseio.com",
+            projectId: "band-aggregator",
+            storageBucket: "band-aggregator.appspot.com",
+            messagingSenderId: "432642484449"
+          };
+          firebase.initializeApp(config);
+          let bandDB = firebase.database();
+          //scrubs the search boxes input for database
+          let $searchBox = $('#searchBox').val().trim();
 
+          let artistInfo = {
+              artistName: $searchBox,
+              dateAdded: firebase.database.ServerValue.TIMESTAMP
+          }
+          bandDB.ref('artist_info').push($searchBox);
+    }
     // When an artists is searched
     const itunesAlbumAJAX = () => {
+        database_config();       
         event.preventDefault();
+        
 
         // Temporary
         // Static Div on HTML
@@ -49,7 +71,12 @@ $(document).ready(function() {
         $.ajax({
             url: albumQueryURL,
             method: "GET",
-            datatype: "json"
+            datatype: "jsonp",
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET',
+                'Access-Control-Allow-Headers': 'Content-Type, X-Requested-With',
+            }
         }).then(function(albumResponse) {
             // Parsing the response to make it a JSON object
             let parsedAlbumResponse = JSON.parse(albumResponse);
@@ -116,7 +143,12 @@ $(document).ready(function() {
         $.ajax({
             url: songQueryURL,
             method: "GET",
-            datatype: "json"
+            datatype: "jsonp",
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET',
+                'Access-Control-Allow-Headers': 'Content-Type, X-Requested-With',
+            }
         }).then(function(songResponse) {
             // Parsing the response to make it a JSON object
             let parsedSongResponse = JSON.parse(songResponse);
@@ -163,7 +195,7 @@ $(document).ready(function() {
 
     $("#searchBtn").on("click", itunesAlbumAJAX);
     $(".tempDiv").on("click", ".albumDiv", TEMPitunesSongAJAX);
-    $(".tempDiv").on("click", ".songDiv", TEMPlyricsAJAX)
+  //  $(".tempDiv").on("click", ".songDiv", TEMPlyricsAJAX)
 
 //=============================================================
 });

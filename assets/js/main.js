@@ -10,10 +10,14 @@ $(function () {
 
     $("#searchBtn").on('click', function () {
         event.preventDefault();
+
         console.log('clicked');
+
         let $SUBMIT = $('#searchBox').val();
         console.log($SUBMIT);
+
         let queryURL = `https://itunes.apple.com/search?term=${$SUBMIT}`;
+        
         //function for the itunes ajax call. -> done by Jake
         const ajax_itunes = () => {
             $.ajax({
@@ -23,83 +27,51 @@ $(function () {
             }).then(function (response) {
 
                 var results = response.results;
-                console.log(results.album);
+                console.log(results);
                 console.log(queryURL);
 
-                for (let j = 0; j < results.length; j++) { //appending elements to div if limit > 1;
-
-                    console.log('I\'m here');
+                $.each(results, function(index, value){
+                    
+                    console.log(`I'm here`);
                     let $DIV = $('<div>');
-                    let $P = $('<p>').attr('data-album-name', results[j].collectionsCensoredName)
-                        .addClass('album').attr('data-artist-name', results[j].artistName);
+                    let $P = $('<p>').attr('data-album-name', value.collectionName).attr('data-artist-name', value.artistName).addClass('album');
+                    let $UL = $(`<ul class="songs">`);
 
-                    $P.text(results[j].collectionCensoredName);
+                    $P.text(value.collectionName);
 
-                    $($DIV).append($P);
+                    $($DIV).append($P).append($UL);
                     $('body').append($DIV);
-
-                    ///////////////////////
-
-                    let songEntity = "song";
-                    limit = 5;
-                    //listening event for submit button. 
-                    $(document.body).on('click', '.album', function () {
-                        console.log(this);
-                        $.ajax({
-                            url: `${queryURL}&entity=${songEntity}&limit=${limit}`,
-                            method: "GET",
-                            dataType: "json",
-                        }).then(function (response) {
-                            var songResults = response.results;
-                            //console.log(response); 
-                            for (let i = 0; i < songResults.length; i++) {
-                                console.log(songResults);
-
-                                let getSongs = $(this).attr("$P", "data-album-name");
-                                console.log('SONG' + getSongs);
-
-                                var $OL = $('<ol>').attr('data-album-song', songResults[i].trackName)
-                                    .addClass('songs').attr('data-song-name', songResults[i].artistName);
-                                $OL.text(songResults[i].trackName);
-                                
-
-                            }
-                            console.log('made it');
-                            $($P).append($OL);
-                        });
-                    })
-
-
-
-                }
+                });              
             })
-        }
+        };  
         ajax_itunes();
-        /* let songEntity = "song";
-         limit = 50;
-         //listening event for submit button. 
-         $('body').on('click', '.album', function () {
-             //  console.log(this);
-             $.ajax({
-                 url: `${queryURL}&entity=${songEntity}&limit=${limit}`,
-                 method: "GET",
-                 dataType: "json",
-             }).then(function (response) {
-                 var songResults = response.results;
-                 //console.log(response); 
-                 for (let i = 0; i < songResults.length; i++) {
-                     console.log(songResults);
-
-                     let getSongs = $(this).attr("$P", "data-album-name");
-                     console.log('SONG' + getSongs);
-
-                     let $OL = $('<ol>').attr('data-album-song', songResults[i].trackName)
-                         .addClass('songs').attr('data-song-name', songResults[i].artistName);
-
-                     $OL.text(songResults[i].trackName);
-                     $('body').append($OL);
-                 }
-             });
-         })*/
     });
+
+    //listening event for submit button. 
+    $(document.body).on('click', '.album', function () {
+        let songEntity = "song";
+        let limit = 5;
+        let $SUBMIT = $(this).attr("data-album-name");
+        let queryURL = `https://itunes.apple.com/search?term=${$SUBMIT}`;
+        let $this = $(this);
+
+        console.log($(this));
+        $.ajax({
+            url: `${queryURL}&entity=${songEntity}&limit=${limit}`,
+            method: "GET",
+            dataType: "json",
+        }).then(function (response) {
+            var songResults = response.results;
+            console.log(response); 
+            
+            $.each(songResults, function(index, value){
+                let $trackName = $(`<li class="song-${index}-${value.trackName}">${value.trackName}</li>`);
+                $this.append($trackName);
+            });
+
+            console.log('made it');
+
+        });
+    });
+
 });

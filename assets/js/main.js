@@ -30,7 +30,8 @@ $(document).ready(function() {
         $.ajax({
             url: albumQueryURL,
             method: "GET",
-            datatype: "json"
+            datatype: "json",
+            
         }).then(function(albumResponse) {
             // Parsing the response to make it a JSON object
             let parsedAlbumResponse = JSON.parse(albumResponse);

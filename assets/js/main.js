@@ -11,6 +11,7 @@ $(document).ready(function() {
 
     // When an artists is searched
     const itunesAlbumAJAX = () => {
+        
         event.preventDefault();
 
         // Temporary
@@ -30,8 +31,7 @@ $(document).ready(function() {
         $.ajax({
             url: albumQueryURL,
             method: "GET",
-            datatype: "json",
-            
+            datatype: "json",            
         }).then(function(albumResponse) {
             // Parsing the response to make it a JSON object
             let parsedAlbumResponse = JSON.parse(albumResponse);
@@ -39,23 +39,33 @@ $(document).ready(function() {
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
 
+            let albumArray = [];
+
             // Loops over the results
             $.each(albumResults, function(index, value) {
                 // Temporary
                 // Created elements needed for interacting with the HTML
                 const $albumNamePar = $("<p>");
+                const $albumPictureImg = $("<img>");
                 const $albumNameDiv = $("<div>");
                 const $SongDiv = $("<div>");
                 const $fullGroupDiv = $("<div>");
 
                 // If the track count isn't one append album (prevents singles from being appended)
-                if(value.trackCount !== 1) {
+                // and if the track is in a holding array it wont trigger, (prevents duplicates)
+                if(value.trackCount !== 1 && $.inArray(value.collectionCensoredName, albumArray) === -1) {
+                    // Pushes the album name to a holding array
+                    albumArray.push(value.collectionCensoredName);
+
                     // Changes the text to the censored name
                     $albumNamePar.text(value.collectionCensoredName);
 
+                    // Adds and Image, can be either 60 or 100
+                    $albumPictureImg.attr("src", value.artworkUrl100);
+
                     // Adds attributes for[album-name, album,length, artist-name, album-index],
                     //  adds class of albumDiv (used for on click), appends $albumNamePar
-                    $albumNameDiv.attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", index).addClass("albumDiv").append($albumNamePar);
+                    $albumNameDiv.attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", index).addClass("albumDiv").append($albumPictureImg, $albumNamePar);
 
                     // Adds class of albumx to song div, empty div for storing songs eg. album4
                     $SongDiv.addClass("album" + index);

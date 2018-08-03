@@ -9,9 +9,30 @@ $(document).ready(function() {
 
 //=============================================================
 
+const database_config = () => {
+    //configuring database
+    var config = {
+        apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
+        authDomain: "band-aggregator.firebaseapp.com",
+        databaseURL: "https://band-aggregator.firebaseio.com",
+        projectId: "band-aggregator",
+        storageBucket: "band-aggregator.appspot.com",
+        messagingSenderId: "432642484449"
+      };
+      firebase.initializeApp(config);
+      let bandDB = firebase.database();
+      //scrubs the search boxes input for database
+      let $searchBox = $('#searchBox').val().trim();
+
+      let artistInfo = {
+          artistName: $searchBox,
+          dateAdded: firebase.database.ServerValue.TIMESTAMP
+      }
+      bandDB.ref('artist_info').push($searchBox); //pushes input of search to database.
+}
     // When an artists is searched
     const itunesAlbumAJAX = () => {
-        
+        database_config();
         event.preventDefault();
 
         // Temporary

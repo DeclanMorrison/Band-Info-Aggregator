@@ -1,3 +1,30 @@
-#searchBox{
-    
+body {
+    background: #2D4159;
+}
+
+.fullGroupDiv {
+    background: #5DA2D5;
+    margin: 5px;
+    padding: 5px;
+}
+
+.albumDiv {
+    background: #F78888;
+    margin: 5px;
+    padding: 5px;
+}
+
+.songDiv {
+    background: #F3D250;
+    margin: 2px;
+}
+
+.lyricsDiv {
+    background: #5DA2D5;
+    margin: 5px;
+    padding: 5px;
+}
+
+.line-break {
+    white-space: pre-wrap
 }

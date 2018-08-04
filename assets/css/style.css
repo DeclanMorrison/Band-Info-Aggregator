@@ -58,7 +58,7 @@ body {
  
 .c-btn{
     position: relative;
-    top: 25px;
+    top: 20px;
 
     background-color: #00b0ff;
     color: #F5F5F5;
@@ -67,7 +67,7 @@ body {
 
 .c-btn:hover{
     position: relative;
-    top: 25px;
+    top: 20px;
 
     background-color: #00b0ff;
     color: #F5F5F5;
@@ -76,7 +76,7 @@ body {
 
 .c-btn:focus{
     position: relative;
-    top: 25px;
+    top: 20px;
 
     background-color: #00b0ff;
     color: #F5F5F5;
@@ -85,45 +85,47 @@ body {
 
 .google{
     position: absolute;
-    top: 30%;
-    left: 46.5%;
+    left: 45%;
     transform: translate(-50%, -50%);
-    width: 33%;
+    width: 50%;
     height: auto;
 }
 
 .minus{
     position: absolute;
-    top: 29.5%;
-    left: 64.5%;
+    left: 74%;
+    transform: translate(-50%, -50%);
 
-    width: 90px;
-    height: 25px;
+    width: 4vw;
+    height: 1.25vw;
 
     background-color: #888;
+}
+
+.logo{
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .title{
     transition: top 1s;
     width: 100vw;
-    height: 100vh;
+    height: 50vh;
     position: absolute;
-    top: 0%;
-    z-index: 100;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
 }
 
 .min{
     transition: top 1s;
-    top: -43%;
+    top: 7%;
 }
 
 .main{
-    position: absolute;;
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
+    margin-top: 75px;
 
-.bio{
-
+    z-index: 2;
 }

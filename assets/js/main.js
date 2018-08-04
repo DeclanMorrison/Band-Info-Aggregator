@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    $('.collapsible').collapsible();
 //=============================================================
 
 // Ctrl + F to find "Temporary", These will be things that still need changed to work with final product
@@ -211,7 +212,7 @@ const database_config = () => {
         $(".bio, .band-image").removeClass("hide");
         $(".band-image").addClass("fadeInLeftBig");
         $(".bio").addClass("fadeInUpBig");
-        
+        $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
     });
 
     $('.collapsible').collapsible();
@@ -228,11 +229,10 @@ $('#band-name').each(function() {
    elem.bind("input paste", function(event){
       // If value has changed...
       if (elem.val() != ""){
-        console.log("Text Box has changed")
         $(".c-btn").removeClass("disabled").addClass("hvr-icon-grow");
      }else{
         $(".c-btn").addClass("disabled").removeClass("hvr-icon-grow");
-     }
+     };
    });
  });
 

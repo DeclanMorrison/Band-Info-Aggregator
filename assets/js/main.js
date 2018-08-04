@@ -53,9 +53,9 @@ $(document).ready(function () {
         // Temporary
         // Empties the display
         $tempDiv.empty();
-
+       // `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
         // Query URL for album search, artistInput only var interaction
-        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
+        let albumQueryURL = `https://itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
 
         $.ajax({
             url: albumQueryURL,
@@ -116,10 +116,37 @@ $(document).ready(function () {
                 },
                 dateAdded: firebase.database.ServerValue.TIMESTAMP
             }
-            bandDB.ref('Artists').push(artistInfo);
-        })
-    }
+            
+            bandDB.ref('Artists').on("value", function(snapshot){
+            
+                console.log('here');
+                let mostRecent = snapshot.val().name;
+                console.log(mostRecent);
+                JSON.stringify(mostRecent);
+                let $recentDiv = $(".recent");
+                let $P = $('<p>').text('Most Recent: ' + mostRecent);
 
+                $recentDiv.append($P);
+                
+            });
+            bandDB.ref('Artists').set({
+                name: artistInput
+            });
+           
+        })
+        
+    }
+   /* let add_recents = () => {
+        bandDB.ref('recent_artists').on("child_added", function(snapshot){
+            let recents = $('#searchBox').snapshot.val().trim();
+            console.log(reached);
+            let $recentDiv = $('<div>');
+            let $appRecents = $('<p>');
+            $appRecents.text(recents);
+            $recentDiv.append($p);
+        })
+    }*/
+    
 
     // Temporary
     // Could not get fat arrow functions to interact with "this", if addressed refactor with ES6
@@ -144,7 +171,8 @@ $(document).ready(function () {
         let $albumIndex = $(".album" + $thisAlbum.attr("data-index"));
 
         // Query for Song search, limits to album length
-        let songQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
+        //`https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}
+        let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
 
         $.ajax({
             url: songQueryURL,

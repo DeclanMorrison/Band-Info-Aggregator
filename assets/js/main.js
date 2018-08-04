@@ -191,6 +191,7 @@ $(document).ready(function (){
             $(".bio, .band-image").removeClass("hide");
             $(".band-image").addClass("fadeInLeftBig");
             $(".bio").addClass("fadeInUpBig");
+            $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
             event.preventDefault();
             return false;
         }
@@ -208,6 +209,7 @@ $(document).ready(function (){
         $(".band-image").addClass("fadeInLeftBig");
         $(".bio").addClass("fadeInUpBig");
         $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+        
     });
 
     $('.collapsible').collapsible();

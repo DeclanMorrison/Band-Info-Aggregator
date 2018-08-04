@@ -1,35 +1,50 @@
-$(document).ready(function (){
-   
+$(document).ready(function () {
+
+    //const database_config = () => {
+    //configuring database
+    var config = {
+        apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
+        authDomain: "band-aggregator.firebaseapp.com",
+        databaseURL: "https://band-aggregator.firebaseio.com",
+        projectId: "band-aggregator",
+        storageBucket: "band-aggregator.appspot.com",
+        messagingSenderId: "432642484449"
+    };
+    firebase.initializeApp(config);
+    let bandDB = firebase.database();
+    //scrubs the search boxes input for database
+    // let $searchBox = $('#searchBox').val().trim();
+
+    /*let ref = firebase.database().ref('Artists/artistName');
+    ref.once("value")
+        .then(function (snapshot) {
+            let snapA = snapshot.exists();
+            let snapB = snapshot.child("artistName" + $searchBox).exists();
+
+            if ($searchBox.snapshot === snapB) {
+                artistCount++;
+            }
+        })*/
 
     //=============================================================
-    //                       Functions
+
+    // Ctrl + F to find "Temporary", These will be things that still need changed to work with final product
+
     //=============================================================
 
-    const database_config = () => {
-        //configuring database
-        var config = {
-            apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
-            authDomain: "band-aggregator.firebaseapp.com",
-            databaseURL: "https://band-aggregator.firebaseio.com",
-            projectId: "band-aggregator",
-            storageBucket: "band-aggregator.appspot.com",
-            messagingSenderId: "432642484449"
-        };
-        firebase.initializeApp(config);
-        let bandDB = firebase.database();
-        //scrubs the search boxes input for database
-        let $searchBox = $('#searchBox').val().trim();
+    //              Functions                                   //
 
-        let artistInfo = {
-            artistName: $searchBox,
-            dateAdded: firebase.database.ServerValue.TIMESTAMP
-        }
-        bandDB.ref('artist_info').push($searchBox); //pushes input of search to database.
-    }
+    //=============================================================
+    // database_config();
     // When an artists is searched
+
     const itunesAlbumAJAX = () => {
-        database_config();
         event.preventDefault();
+
+        // Grabs the value of the search
+        let artistInput = $("#searchBox").val().trim();
+
+      //  bandDB.ref('Artists').push(artistInfo);
 
         // Temporary
         // Static Div on HTML
@@ -38,10 +53,7 @@ $(document).ready(function (){
         // Temporary
         // Empties the display
         $tempDiv.empty();
-
-        // Grabs the value of the search
-        let artistInput = $("#searchBox").val().trim();
-
+       // `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
         // Query URL for album search, artistInput only var interaction
         let albumQueryURL = `https://itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
 
@@ -49,17 +61,17 @@ $(document).ready(function (){
             url: albumQueryURL,
             method: "GET",
             datatype: "json",
-        }).then(function (albumResponse){
+        }).then(function (albumResponse) {
             // Parsing the response to make it a JSON object
             let parsedAlbumResponse = JSON.parse(albumResponse);
 
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
-
             let albumArray = [];
-
+        
             // Loops over the results
-            $.each(albumResults, function (index, value){
+            $.each(albumResults, function (index, value) {
+
                 // Temporary
                 // Created elements needed for interacting with the HTML
                 const $albumNamePar = $("<p>");
@@ -92,10 +104,49 @@ $(document).ready(function (){
 
                     // Appends the full group div to the display
                     $tempDiv.append($fullGroupDiv);
+
+                    //sanatizes the search box after click
+                    $('#searchBox').val('');
                 }
             })
+            let artistInfo = {
+                artistName: {
+                    name: artistInput,
+                    albums: albumArray,
+                },
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            }
+            
+            bandDB.ref('Artists').on("value", function(snapshot){
+            
+                console.log('here');
+                let mostRecent = snapshot.val().name;
+                console.log(mostRecent);
+                JSON.stringify(mostRecent);
+                let $recentDiv = $(".recent");
+                let $P = $('<p>').text('Most Recent: ' + mostRecent);
+
+                $recentDiv.append($P);
+                
+            });
+            bandDB.ref('Artists').set({
+                name: artistInput
+            });
+           
         })
+        
     }
+   /* let add_recents = () => {
+        bandDB.ref('recent_artists').on("child_added", function(snapshot){
+            let recents = $('#searchBox').snapshot.val().trim();
+            console.log(reached);
+            let $recentDiv = $('<div>');
+            let $appRecents = $('<p>');
+            $appRecents.text(recents);
+            $recentDiv.append($p);
+        })
+    }*/
+    
 
     // Temporary
     // Could not get fat arrow functions to interact with "this", if addressed refactor with ES6
@@ -111,7 +162,7 @@ $(document).ready(function (){
     // }
 
     // Called when album is clicked
-    function TEMPitunesSongAJAX(){
+    function TEMPitunesSongAJAX() {
         // Shorthand
         let $thisAlbum = $(this);
         let albumName = $thisAlbum.attr("data-album-name");
@@ -120,13 +171,14 @@ $(document).ready(function (){
         let $albumIndex = $(".album" + $thisAlbum.attr("data-index"));
 
         // Query for Song search, limits to album length
+        //`https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}
         let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
 
         $.ajax({
             url: songQueryURL,
             method: "GET",
             datatype: "json"
-        }).then(function (songResponse){
+        }).then(function (songResponse) {
             // Parsing the response to make it a JSON object
             let parsedSongResponse = JSON.parse(songResponse);
 
@@ -143,7 +195,7 @@ $(document).ready(function (){
             // If the data-state is not open, opens it            
             else {
                 // Loop for songs
-                $.each(songResults, function (index, value){
+                $.each(songResults, function (index, value) {
                     // Shorthand
                     const $songNamePar = $("<p>");
                     const $songNameDiv = $("<div>");
@@ -158,13 +210,13 @@ $(document).ready(function (){
                     $albumIndex.append($songNameDiv);
 
                     // Sets the attribute of data-state to open
-                    $thisAlbum.attr("data-state", "open");
+                    $thisAlbum.attr("data-state", "open")
                 });
             }
         });
     }
 
-    function TEMPlyricsAJAX(){
+    function TEMPlyricsAJAX() {
         let $thisSong = $(this);
         let songArtistName = $thisSong.attr("data-artist-name");
         let songName = $thisSong.attr("data-song-name");
@@ -177,72 +229,23 @@ $(document).ready(function (){
         $.ajax({
             url: queryURL2,
             method: "GET"
-        }).then(function (lyricsResponse){
-            console.log(lyricsResponse);
-            $lyricsDiv.text(lyricsResponse.lyrics);
+        }).then(function (lyricsResponse) {
+            console.log(lyricsResponse)
+            $lyricsDiv.text(lyricsResponse.lyrics)
+        
         });
     }
 
+    //=============================================================
 
-
-    $('#band-name').keyup(function (event){
-        if (event.which === 13) {
-            $(".title").addClass("min");
-            $(".bio, .band-image").removeClass("hide");
-            $(".band-image").addClass("fadeInLeftBig");
-            $(".bio").addClass("fadeInUpBig");
-            $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
-            event.preventDefault();
-            return false;
-        }
-    });
+    //              On Clicks                                    //  
 
     //=============================================================
 
-    //              On Clicks
-
-    //=============================================================
-
-    $("#search-btn").on("click", function (){
-        $(".title").addClass("min");
-
-        $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
-
-        setTimeout(function(){
-            $(".bio").addClass("fadeInRightBig").removeClass("hide");
-            setTimeout(function(){
-                $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
-                setTimeout(function(){
-                    $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
-                },250)
-            },250)
-        }, 250)
-        
-
-        
-
-        
-
-        
-    });
-
-    $('.collapsible').collapsible();
-
+    $("#searchBtn").on("click", itunesAlbumAJAX);
     $(".tempDiv").on("click", ".albumDiv", TEMPitunesSongAJAX);
     $(".tempDiv").on("click", ".songDiv", TEMPlyricsAJAX);
 
-    //===========================================================
+    //=============================================================
 
-    $('#band-name').each(function (){
-        const elem = $(this);
-        // Look for changes in the value
-        elem.bind("input paste", function (event) {
-            // If value has changed...
-            if (elem.val() != "") {
-                $(".c-btn").removeClass("disabled").addClass("hvr-icon-grow");
-            } else {
-                $(".c-btn").addClass("disabled").removeClass("hvr-icon-grow");
-            };
-        });
-    });
 });

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Band Info Aggregator</title>
+    <title>Google-</title>
 
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,48 +31,112 @@
 </head>
 
 <body>
-    <div class="row">
-        <form class="col s12">
+
+    <div class="title">
+        <div class="container logo">
+            <img class="google" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2000px-Google_2015_logo.svg.png">
+            <div class="minus"></div>
+        </div>
+
+        <div class="container search-bar">
             <div class="row">
-                <div></div>
-                <input type="text" data-length="25" id="searchBox">
-                <label for="searchBox">Search</label>
+                <div class="input-field col s10">
+                    <input id="band-name" type="text" class="c-search-bar" autocomplete="off">
+                    <label class="input" for="band-name">Band Name</label>
+                </div>
+                <div class="col s2">
+                    <button class="btn waves-effect waves-light c-btn z-depth-0 disabled" type="submit" id="search-btn" name="action">Search
+                        <i class="material-icons right hvr-icon">search</i>
+                    </button>
+                </div>
             </div>
-            <button class="btn waves-effect waves-light" type="submit" id="searchBtn" name="action">Search
-                <i class="material-icons right">send</i>
-            </button>
-        </form>
+        </div>
     </div>
 
-    <ul class="collapsible">
-        <li>
-            <div class="collapsible-header album0Div"><img class="album0Img"><p class="album0Name"></p></div>
-            <div class="collapsible-body song0Div"></div>
-        </li>
-        <li>
-            <div class="collapsible-header album1Div"><img class="album1Img"><p class="album1Name"></p></div>
-            <div class="collapsible-body song1Div"></div>
-        </li>
-        <li>
-            <div class="collapsible-header album2Div"><img class="album2Img"><p class="album2Name"></p></div>
-            <div class="collapsible-body song2Div"></div>
-        </li>
-        <li>
-            <div class="collapsible-header album3Div"><img class="album3Img"><p class="album3Name"></p></div>
-            <div class="collapsible-body song3Div"></div>
-        </li>
-        <li>
-            <div class="collapsible-header album4Div"><img class="album4Img"><p class="album4Name"></p></div>
-            <div class="collapsible-body song4Div"></div>
-        </li>
-    </ul>
+    <div class="container main">
+        <div class="row">
+            <div class="col s3 m3">
+                <div class="card animated band-image hide">
+                    <div class="card-image">
+                        <img src="https://www.mikrodots.com/wp-content/uploads/2016/07/placeholder.jpg">
+                        <span class="card-title">Card Title</span>
+                    </div>
+                </div>
+            </div>
 
-    <div class="tempDiv"></div>
+            <div class="col s9 m9">
+                <div class="card-panel bio animated hide">
+                    <span class="">Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis libero facilis nemo, sequi alias
+                        deleniti deserunt repudiandae culpa cupiditate ut tenetur expedita placeat repellat veritatis esse
+                        consectetur praesentium enim dolorum maiores amet tempore dolore ex minima qui! Officiis est ullam
+                        hic libero eum molestias veniam aut, quia facere neque ab!Lorem ipsum dolor sit amet consectetur
+                        adipisicing elit. Cumque laboriosam eum nesciunt rem voluptatem repudiandae, quam soluta libero provident,
+                        ad commodi ullam ipsa labore nisi itaque ratione nulla quo ipsum?
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
 
-    <!-- Will be a modal -->
-    <div class="tempLyricsDiv"></div>
+                <ul class="collapsible animated hide">
+                    <li class=>
+                        <div class="collapsible-header album0Div">
+                            <img class="album0Img">
+                            <p class="album0Name"></p>
+                        </div>
+                        <div class="collapsible-body song0Div">
+                            
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header album1Div">
+                            <img class="album1Img">
+                            <p class="album1Name"></p>
+                        </div>
+                        <div class="collapsible-body song1Div">
+                            
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header album2Div">
+                            <img class="album2Img">
+                            <p class="album2Name"></p>
+                        </div>
+                        <div class="collapsible-body song2Div">
+                            
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header album3Div">
+                            <img class="album3Img">
+                            <p class="album3Name"></p>
+                        </div>
+                        <div class="collapsible-body song3Div">
+                            
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header album4Div">
+                            <img class="album4Img">
+                            <p class="album4Name"></p>
+                        </div>
+                        <div class="collapsible-body song4Div">
+                            
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-copyright animated hide">
+        <p>© 2018 Copyright</p>
+    </footer>
 
 
+
+    
 
 
 
@@ -83,10 +147,13 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-    <!-- Materialize -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <!-- Javascript -->
     <script src="assets/js/main.js"></script>
+    <!-- Materialize -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
+
 </body>
 
 </html>

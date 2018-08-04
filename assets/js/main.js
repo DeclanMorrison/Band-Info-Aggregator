@@ -213,6 +213,7 @@ const database_config = () => {
         $(".band-image").addClass("fadeInLeftBig");
         $(".bio").addClass("fadeInUpBig");
         $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+        
     });
 
     $('.collapsible').collapsible();

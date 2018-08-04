@@ -236,13 +236,66 @@ $(document).ready(function () {
         });
     }
 
+
+    const wikiAJAXcall = () => {
+        const bandName = $("#band-name").val().trim();
+        const queryURL = `https://en.wikipedia.org/w/api.php?action=query&titles=${bandName}&prop=revisions&rvprop=content&format=json&formatversion=2`
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(response){
+            console.log(response);
+        });
+    };
+
+
+
+    $('#band-name').keyup(function (event){
+        if (event.which === 13) {
+            wikiAJAXcall();
+            $(".title").addClass("min");
+            $(".bio, .band-image").removeClass("hide");
+            $(".band-image").addClass("fadeInLeftBig");
+            $(".bio").addClass("fadeInUpBig");
+            $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+            event.preventDefault();
+            return false;
+        }
+    });
+
     //=============================================================
 
     //              On Clicks                                    //  
 
     //=============================================================
 
-    $("#searchBtn").on("click", itunesAlbumAJAX);
+
+    $("#search-btn").on("click", function (){
+        itunesAlbumAJAX();
+        wikiAJAXcall();
+        $(".title").addClass("min");
+
+        $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
+
+        setTimeout(function(){
+            $(".bio").addClass("fadeInRightBig").removeClass("hide");
+            setTimeout(function(){
+                $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+                setTimeout(function(){
+                    $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
+                },250)
+            },250)
+        }, 250)
+        
+
+        
+
+        
+
+        
+    });
+
+    $('.collapsible').collapsible();
     $(".tempDiv").on("click", ".albumDiv", TEMPitunesSongAJAX);
     $(".tempDiv").on("click", ".songDiv", TEMPlyricsAJAX);
 

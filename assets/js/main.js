@@ -2,28 +2,18 @@ $(document).ready(function () {
 
     //const database_config = () => {
     //configuring database
-        var config = {
-            apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
-            authDomain: "band-aggregator.firebaseapp.com",
-            databaseURL: "https://band-aggregator.firebaseio.com",
-            projectId: "band-aggregator",
-            storageBucket: "band-aggregator.appspot.com",
-            messagingSenderId: "432642484449"
-        };
-        firebase.initializeApp(config);
-        let bandDB = firebase.database();
+    var config = {
+        apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
+        authDomain: "band-aggregator.firebaseapp.com",
+        databaseURL: "https://band-aggregator.firebaseio.com",
+        projectId: "band-aggregator",
+        storageBucket: "band-aggregator.appspot.com",
+        messagingSenderId: "432642484449"
+    };
+    firebase.initializeApp(config);
+    let bandDB = firebase.database();
     //scrubs the search boxes input for database
     // let $searchBox = $('#searchBox').val().trim();
-    let artistCount = 0;
-
-    //let albumInfo = albumArray;
-    /*let artistInfo = {
-        artistName: $searchBox,
-        count: artistCount,
-        dateAdded: firebase.database.ServerValue.TIMESTAMP
-    }*/
-    //pushes input of search to database.
-
 
     /*let ref = firebase.database().ref('Artists/artistName');
     ref.once("value")
@@ -35,28 +25,26 @@ $(document).ready(function () {
                 artistCount++;
             }
         })*/
-    //}
+
     //=============================================================
 
     // Ctrl + F to find "Temporary", These will be things that still need changed to work with final product
 
     //=============================================================
 
-    //              Functions
+    //              Functions                                   //
 
     //=============================================================
     // database_config();
     // When an artists is searched
-    
+
     const itunesAlbumAJAX = () => {
-        //database_config();
-        let artistInput = $("#searchBox").val().trim();
         event.preventDefault();
-        let artistInfo = {
-            artistName: artistInput,
-            dateAdded: firebase.database.ServerValue.TIMESTAMP
-        }
-        bandDB.ref('Artists').push(artistInfo);
+
+        // Grabs the value of the search
+        let artistInput = $("#searchBox").val().trim();
+
+      //  bandDB.ref('Artists').push(artistInfo);
 
         // Temporary
         // Static Div on HTML
@@ -64,12 +52,7 @@ $(document).ready(function () {
 
         // Temporary
         // Empties the display
-
         $tempDiv.empty();
-
-        // Grabs the value of the search
-
-
 
         // Query URL for album search, artistInput only var interaction
         let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
@@ -85,11 +68,9 @@ $(document).ready(function () {
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
             let albumArray = [];
-
+        
             // Loops over the results
             $.each(albumResults, function (index, value) {
-
-
 
                 // Temporary
                 // Created elements needed for interacting with the HTML
@@ -124,11 +105,18 @@ $(document).ready(function () {
                     // Appends the full group div to the display
                     $tempDiv.append($fullGroupDiv);
 
-
                     //sanatizes the search box after click
                     $('#searchBox').val('');
                 }
             })
+            let artistInfo = {
+                artistName: {
+                    name: artistInput,
+                    albums: albumArray,
+                },
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            }
+            bandDB.ref('Artists').push(artistInfo);
         })
     }
 
@@ -207,7 +195,6 @@ $(document).ready(function () {
         const $lyricsDiv = $(".tempLyricsDiv");
         $lyricsDiv.addClass("line-break lyricsDiv").empty();
 
-
         // // Allows spaces eg. ".../coldplay/adventure of a life time", %20 workds aswell, NEEDS SPACES (toLowerCase)
         let queryURL2 = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
 
@@ -222,7 +209,7 @@ $(document).ready(function () {
 
     //=============================================================
 
-    //              On Clicks
+    //              On Clicks                                    //  
 
     //=============================================================
 
@@ -230,7 +217,6 @@ $(document).ready(function () {
     $(".tempDiv").on("click", ".albumDiv", TEMPitunesSongAJAX);
     $(".tempDiv").on("click", ".songDiv", TEMPlyricsAJAX);
 
-    //database_config();
     //=============================================================
 
 });

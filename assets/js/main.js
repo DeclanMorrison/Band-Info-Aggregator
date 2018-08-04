@@ -205,10 +205,24 @@ $(document).ready(function (){
 
     $("#search-btn").on("click", function (){
         $(".title").addClass("min");
-        $(".bio, .band-image").removeClass("hide");
-        $(".band-image").addClass("fadeInLeftBig");
-        $(".bio").addClass("fadeInUpBig");
-        $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+
+        $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
+
+        setTimeout(function(){
+            $(".bio").addClass("fadeInRightBig").removeClass("hide");
+            setTimeout(function(){
+                $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+                setTimeout(function(){
+                    $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
+                },250)
+            },250)
+        }, 250)
+        
+
+        
+
+        
+
         
     });
 

@@ -198,8 +198,9 @@ const database_config = () => {
         $(".bio, .band-image").removeClass("hide");
         $(".band-image").addClass("fadeInLeftBig");
         $(".bio").addClass("fadeInUpBig");
+        
     });
-    
+
     $('.collapsible').collapsible();
 
     $(".tempDiv").on("click", ".albumDiv", TEMPitunesSongAJAX);

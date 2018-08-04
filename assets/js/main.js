@@ -5,43 +5,45 @@ $(document).ready(function() {
 
 //=============================================================
 
+//              FireBase
+
+//=============================================================
+
+    // //configuring database
+    // var config = {
+    //     apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
+    //     authDomain: "band-aggregator.firebaseapp.com",
+    //     databaseURL: "https://band-aggregator.firebaseio.com",
+    //     projectId: "band-aggregator",
+    //     storageBucket: "band-aggregator.appspot.com",
+    //     messagingSenderId: "432642484449"
+    //     };
+    //     firebase.initializeApp(config);
+    //     let bandDB = firebase.database();
+    //     //scrubs the search boxes input for database
+    //     let $searchBox = $('#searchBox').val().trim();
+
+    //     let artistInfo = {
+    //         artistName: $searchBox,
+    //         dateAdded: firebase.database.ServerValue.TIMESTAMP
+    //     }
+    //     bandDB.ref('artist_info').push($searchBox); //pushes input of search to database.
+
+//=============================================================
+
 //              Functions
 
 //=============================================================
 
-const database_config = () => {
-    //configuring database
-    var config = {
-        apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
-        authDomain: "band-aggregator.firebaseapp.com",
-        databaseURL: "https://band-aggregator.firebaseio.com",
-        projectId: "band-aggregator",
-        storageBucket: "band-aggregator.appspot.com",
-        messagingSenderId: "432642484449"
-      };
-      firebase.initializeApp(config);
-      let bandDB = firebase.database();
-      //scrubs the search boxes input for database
-      let $searchBox = $('#searchBox').val().trim();
-
-      let artistInfo = {
-          artistName: $searchBox,
-          dateAdded: firebase.database.ServerValue.TIMESTAMP
-      }
-      bandDB.ref('artist_info').push($searchBox); //pushes input of search to database.
-}
     // When an artists is searched
-    const itunesAlbumAJAX = () => {
-        database_config();
+    const itunesAlbumAJAX = () => {        
         event.preventDefault();
 
-        // Temporary
-        // Static Div on HTML
-        const $tempDiv = $(".tempDiv");
+        let albumOnIndex = 0;        
+        let albumArray = [];
 
-        // Temporary
-        // Empties the display
-        $tempDiv.empty();
+        $(".collapsible-body").attr("style", "");
+        $("li").removeClass("active");
 
         // Grabs the value of the search
         let artistInput = $("#searchBox").val().trim();
@@ -59,46 +61,54 @@ const database_config = () => {
 
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
-
-            let albumArray = [];
+            console.log(albumResults)
 
             // Loops over the results
             $.each(albumResults, function(index, value) {
-                // Temporary
-                // Created elements needed for interacting with the HTML
-                const $albumNamePar = $("<p>");
-                const $albumPictureImg = $("<img>");
-                const $albumNameDiv = $("<div>");
-                const $SongDiv = $("<div>");
-                const $fullGroupDiv = $("<div>");
-
                 // If the track count isn't one append album (prevents singles from being appended)
                 // and if the track is in a holding array it wont trigger, (prevents duplicates)
-                if(value.trackCount !== 1 && $.inArray(value.collectionCensoredName, albumArray) === -1) {
+                if(value.trackCount !== 1 && $.inArray(value.collectionCensoredName, albumArray) === -1 && albumOnIndex < 5) {
                     // Pushes the album name to a holding array
-                    albumArray.push(value.collectionCensoredName);
+                    albumArray.push(value.collectionCensoredName);                    
 
                     // Changes the text to the censored name
-                    $albumNamePar.text(value.collectionCensoredName);
+                    $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
 
-                    // Adds and Image, can be either 60 or 100
-                    $albumPictureImg.attr("src", value.artworkUrl100);
 
                     // Adds attributes for[album-name, album,length, artist-name, album-index],
                     //  adds class of albumDiv (used for on click), appends $albumNamePar
-                    $albumNameDiv.attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", index).addClass("albumDiv").append($albumPictureImg, $albumNamePar);
+                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", albumOnIndex);
 
-                    // Adds class of albumx to song div, empty div for storing songs eg. album4
-                    $SongDiv.addClass("album" + index);
+                    $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
 
-                    // Adds class of fullGroupDiv, appends the Album div and empty song Div
-                    $fullGroupDiv.addClass("fullGroupDiv").append($albumNameDiv, $SongDiv);
-
-                    // Appends the full group div to the display
-                    $tempDiv.append($fullGroupDiv);
-                }                
+                    albumOnIndex++;
+                }
             })
-        })
+
+            $.each(albumResults, function(index, value) {
+                // Temporary
+                // Created img needed for interacting with the HTML
+                const $albumPictureImg = $("<img>");
+
+                // If the track count isn't one append album (prevents singles from being appended)
+                // and if the track is in a holding array it wont trigger, (prevents duplicates)
+                if($.inArray(value.collectionCensoredName, albumArray) === -1 && albumOnIndex < 5) {
+                    // Pushes the album name to a holding array
+                    albumArray.push(value.collectionCensoredName);                    
+
+                    // Changes the text to the censored name
+                    $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
+
+                    // Adds attributes for[album-name, album,length, artist-name, album-index],
+                    //  adds class of albumDiv (used for on click), appends $albumNamePar
+                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", albumOnIndex);
+
+                    $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
+
+                    albumOnIndex++;
+                }
+            })
+        }) 
     }
 
     // Temporary
@@ -121,7 +131,9 @@ const database_config = () => {
         let albumName = $thisAlbum.attr("data-album-name");
         let albumLength = $thisAlbum.attr("data-album-length");
         let albumArtistName = $thisAlbum.attr("data-artist-name");
-        let $albumIndex = $(".album" + $thisAlbum.attr("data-index"));
+        let forAlbumIndex = $thisAlbum.attr("data-index");
+
+        $(".song" + forAlbumIndex + "Div").empty();
 
         // Query for Song search, limits to album length
         let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
@@ -136,35 +148,24 @@ const database_config = () => {
 
             // Shorthand for interacting with JSON
             let songResults = parsedSongResponse.results;
+            console.log(songResults);
+            const $songCollection = $("<ul>");
+            $songCollection.addClass("collection");
 
-            // If the data-state is open it empties the song div
-            if($thisAlbum.attr("data-state") === "open") {
-                // Sets data-state to closed
-                $thisAlbum.attr("data-state", "closed");
-                $albumIndex.empty();
-            }
+            // Loop for songs
+            $.each(songResults, function(index, value) {
+                const $songCollectionItem = $("<li>");
 
-            // If the data-state is not open, opens it            
-            else {
-                // Loop for songs
-                $.each(songResults, function(index, value) {
-                    // Shorthand
-                    const $songNamePar = $("<p>");
-                    const $songNameDiv = $("<div>");
+                $songCollectionItem.addClass("collection-item");
 
-                    // Changes the Text to the song name
-                    $songNamePar.text(value.trackCensoredName);
+                // Changes the Text to the song name
+                $songCollectionItem.text(value.trackCensoredName).attr("data-song-name", value.trackCensoredName).attr("data-artist-name", albumArtistName);
 
-                    // Adds attributes for[song-name, artist-name], adds class of songDiv, appends songNamePar
-                    $songNameDiv.attr("data-song-name", value.trackCensoredName).attr("data-artist-name", albumArtistName).addClass("songDiv").append($songNamePar);
+                // Adds attributes for[song-name, artist-name], adds class of songDiv, appends songNamePar
+                $($songCollection).append($songCollectionItem);
+            });
 
-                    // Appends the Song name div to the empty song div
-                    $albumIndex.append($songNameDiv);
-                    
-                    // Sets the attribute of data-state to open
-                    $thisAlbum.attr("data-state", "open")
-                });
-            }
+            $(".song" + forAlbumIndex + "Div").append($songCollection);            
         });
     }
 
@@ -194,8 +195,9 @@ const database_config = () => {
 //=============================================================
 
     $("#searchBtn").on("click", itunesAlbumAJAX);
-    $(".tempDiv").on("click", ".albumDiv", TEMPitunesSongAJAX);
-    $(".tempDiv").on("click", ".songDiv", TEMPlyricsAJAX)
+    $(".collapsible-header").on("click", TEMPitunesSongAJAX);
 
 //=============================================================
+
+    $('.collapsible').collapsible();   
 });

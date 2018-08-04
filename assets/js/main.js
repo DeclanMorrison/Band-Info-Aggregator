@@ -183,10 +183,22 @@ $(document).ready(function (){
         });
     }
 
+    const wikiAJAXcall = () => {
+        const bandName = $("#band-name").val().trim();
+        const queryURL = `https://en.wikipedia.org/w/api.php?action=query&titles=${bandName}&prop=revisions&rvprop=content&format=json&formatversion=2`
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(response){
+            console.log(response);
+        });
+    };
+
 
 
     $('#band-name').keyup(function (event){
         if (event.which === 13) {
+            wikiAJAXcall();
             $(".title").addClass("min");
             $(".bio, .band-image").removeClass("hide");
             $(".band-image").addClass("fadeInLeftBig");
@@ -204,6 +216,7 @@ $(document).ready(function (){
     //=============================================================
 
     $("#search-btn").on("click", function (){
+        wikiAJAXcall();
         $(".title").addClass("min");
 
         $(".band-image").addClass("fadeInLeftBig").removeClass("hide");

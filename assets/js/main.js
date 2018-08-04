@@ -219,7 +219,7 @@ $('#band-name').each(function() {
         $(".c-btn").removeClass("disabled").addClass("hvr-icon-grow");
      }else{
         $(".c-btn").addClass("disabled").removeClass("hvr-icon-grow");
-     }
+     };
    });
  });
 

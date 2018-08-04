@@ -18,3 +18,11 @@ body {
     background: #F3D250;
     margin: 2px;
 }
+
+.popup-overlay {
+    visibility:hidden;
+}
+
+.popup-cotent {
+    visibility:hidden;
+}

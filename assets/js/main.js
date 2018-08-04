@@ -230,8 +230,9 @@ $(document).ready(function () {
             url: queryURL2,
             method: "GET"
         }).then(function (lyricsResponse) {
-            console.log(lyricsResponse);
+            console.log(lyricsResponse)
             $lyricsDiv.text(lyricsResponse.lyrics)
+        
         });
     }
 

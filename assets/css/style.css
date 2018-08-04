@@ -1,5 +1,14 @@
+/* Colors
+ - White: #F5F5F5, grey lighten-4
+ - Black: #212121, grey darken-4
+ - Blue: #00b0ff, light-blue accent-3
+ - Red: #ff5252, red accent-2
+ - Yellow: #ffee58, yellow lighten-1
+  */
+
+
 body {
-    background: #2D4159;
+    background: #F5F5F5;
 }
 
 .fullGroupDiv {
@@ -27,4 +36,94 @@ body {
 
 .line-break {
     white-space: pre-wrap
+}
+
+.search-bar{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+}
+
+/* label focus color */
+.input-field input:focus + label {
+    color: #00b0ff !important;
+}
+
+/* label underline focus color */
+.row .input-field input:focus {
+    box-shadow: 0 1px 0 0 #00b0ff !important
+}
+ 
+.c-btn{
+    position: relative;
+    top: 25px;
+
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.c-btn:hover{
+    position: relative;
+    top: 25px;
+
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.c-btn:focus{
+    position: relative;
+    top: 25px;
+
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.google{
+    position: absolute;
+    top: 30%;
+    left: 46.5%;
+    transform: translate(-50%, -50%);
+    width: 33%;
+    height: auto;
+}
+
+.minus{
+    position: absolute;
+    top: 29.5%;
+    left: 64.5%;
+
+    width: 90px;
+    height: 25px;
+
+    background-color: #888;
+}
+
+.title{
+    transition: top 1s;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0%;
+    z-index: 100;
+}
+
+.min{
+    transition: top 1s;
+    top: -43%;
+}
+
+.main{
+    position: absolute;;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.bio{
+
 }

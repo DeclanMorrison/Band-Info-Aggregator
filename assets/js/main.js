@@ -193,9 +193,30 @@ const database_config = () => {
 
 //=============================================================
 
-    $("#searchBtn").on("click", itunesAlbumAJAX);
+    $("#search-btn").on("click", function(){
+        $(".title").addClass("min");
+        $(".bio, .band-image").removeClass("hide");
+        $(".band-image").addClass("fadeInLeftBig");
+        $(".bio").addClass("fadeInUpBig");
+    });
     $(".tempDiv").on("click", ".albumDiv", TEMPitunesSongAJAX);
     $(".tempDiv").on("click", ".songDiv", TEMPlyricsAJAX)
 
 //=============================================================
+
+$('#band-name').each(function() {
+   const elem = $(this);
+
+   // Look for changes in the value
+   elem.bind("input paste", function(event){
+      // If value has changed...
+      if (elem.val() != ""){
+        console.log("Text Box has changed")
+        $(".c-btn").removeClass("disabled").addClass("hvr-icon-grow");
+     }else{
+        $(".c-btn").addClass("disabled").removeClass("hvr-icon-grow");
+     }
+   });
+ });
+
 });

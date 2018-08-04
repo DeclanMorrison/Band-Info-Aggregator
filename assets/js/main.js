@@ -13,15 +13,15 @@ $(document).ready(function () {
     firebase.initializeApp(config);
     let bandDB = firebase.database();
     //scrubs the search boxes input for database
-    // let $searchBox = $('#searchBox').val().trim();
+    // let $band-name = $('#band-name').val().trim();
 
     /*let ref = firebase.database().ref('Artists/artistName');
     ref.once("value")
         .then(function (snapshot) {
             let snapA = snapshot.exists();
-            let snapB = snapshot.child("artistName" + $searchBox).exists();
+            let snapB = snapshot.child("artistName" + $band-name).exists();
 
-            if ($searchBox.snapshot === snapB) {
+            if ($band-name.snapshot === snapB) {
                 artistCount++;
             }
         })*/
@@ -42,7 +42,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         // Grabs the value of the search
-        let artistInput = $("#searchBox").val().trim();
+        let artistInput = $("#band-name").val().trim();
 
       //  bandDB.ref('Artists').push(artistInfo);
 
@@ -106,7 +106,7 @@ $(document).ready(function () {
                     $tempDiv.append($fullGroupDiv);
 
                     //sanatizes the search box after click
-                    $('#searchBox').val('');
+                    $('#band-name').val('');
                 }
             })
             let artistInfo = {
@@ -138,7 +138,7 @@ $(document).ready(function () {
     }
    /* let add_recents = () => {
         bandDB.ref('recent_artists').on("child_added", function(snapshot){
-            let recents = $('#searchBox').snapshot.val().trim();
+            let recents = $('#band-name').snapshot.val().trim();
             console.log(reached);
             let $recentDiv = $('<div>');
             let $appRecents = $('<p>');
@@ -237,22 +237,22 @@ $(document).ready(function () {
     }
 
 
-    const wikiAJAXcall = () => {
-        const bandName = $("#band-name").val().trim();
-        const queryURL = `https://en.wikipedia.org/w/api.php?action=query&titles=${bandName}&prop=revisions&rvprop=content&format=json&formatversion=2`
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).then(function(response){
-            console.log(response);
-        });
-    };
+    // const wikiAJAXcall = () => {
+    //     const bandName = $("#band-name").val().trim();
+    //     const queryURL = `https://en.wikipedia.org/w/api.php?action=query&titles=${bandName}&prop=revisions&rvprop=content&format=json&formatversion=2`
+    //     $.ajax({
+    //         url: queryURL,
+    //         method: "GET"
+    //     }).then(function(response){
+    //         console.log(response);
+    //     });
+    // };
 
 
 
     $('#band-name').keyup(function (event){
         if (event.which === 13) {
-            wikiAJAXcall();
+            // wikiAJAXcall();
             $(".title").addClass("min");
             $(".bio, .band-image").removeClass("hide");
             $(".band-image").addClass("fadeInLeftBig");
@@ -272,7 +272,7 @@ $(document).ready(function () {
 
     $("#search-btn").on("click", function (){
         itunesAlbumAJAX();
-        wikiAJAXcall();
+        // wikiAJAXcall();
         $(".title").addClass("min");
 
         $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
@@ -286,13 +286,19 @@ $(document).ready(function () {
                 },250)
             },250)
         }, 250)
-        
+    });
 
-        
-
-        
-
-        
+    $('#band-name').each(function (){
+        const elem = $(this);
+        // Look for changes in the value
+        elem.bind("changes input paste", function (event) {
+            // If value has changed...
+            if (elem.val() != "") {
+                $(".c-btn").removeClass("disabled").addClass("hvr-icon-grow");
+            } else {
+                $(".c-btn").addClass("disabled").removeClass("hvr-icon-grow");
+            };
+        });
     });
 
     $('.collapsible').collapsible();

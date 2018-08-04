@@ -187,6 +187,19 @@ const database_config = () => {
         });
     }
 
+
+    
+    $('#band-name').keyup( function( event ) {
+        if ( event.which === 13 ) {
+            $(".title").addClass("min");
+            $(".bio, .band-image").removeClass("hide");
+            $(".band-image").addClass("fadeInLeftBig");
+            $(".bio").addClass("fadeInUpBig");
+            event.preventDefault();
+            return false;
+        }
+    });
+
 //=============================================================
 
 //              On Clicks

@@ -134,32 +134,6 @@ $(document).ready(function () {
             });
            
         })
-        
-    }
-   /* let add_recents = () => {
-        bandDB.ref('recent_artists').on("child_added", function(snapshot){
-            let recents = $('#band-name').snapshot.val().trim();
-            console.log(reached);
-            let $recentDiv = $('<div>');
-            let $appRecents = $('<p>');
-            $appRecents.text(recents);
-            $recentDiv.append($p);
-        })
-    }*/
-    
-
-    // Temporary
-    // Could not get fat arrow functions to interact with "this", if addressed refactor with ES6
-    // const itunesSongAJAX = () => {
-
-    //     let $this = $(this);
-    //     console.log($this);
-
-    //     let albumName = $this.attr("data-album-name");
-    //     console.log(albumName);
-
-    //     let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${trackCount}`
-    // }
 
     // Called when album is clicked
     function TEMPitunesSongAJAX() {

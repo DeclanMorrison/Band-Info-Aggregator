@@ -8,27 +8,22 @@ $(document).ready(function() {
 //              FireBase
 
 //=============================================================
+//Note
+//Firebase stuff
+// bandDB.ref('Artists').on("value", function(snapshot){
+//     $('#recents').empty();
+//        console.log('here');
+//        let mostRecent = snapshot.val().name;
+//        console.log(mostRecent);
+//        JSON.stringify(mostRecent);
+//        let $recentDiv = $("#recents");
+//        let $P = $('<p>').text('Most Recent: ' + mostRecent);
 
-    // //configuring database
-    // var config = {
-    //     apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
-    //     authDomain: "band-aggregator.firebaseapp.com",
-    //     databaseURL: "https://band-aggregator.firebaseio.com",
-    //     projectId: "band-aggregator",
-    //     storageBucket: "band-aggregator.appspot.com",
-    //     messagingSenderId: "432642484449"
-    //     };
-    //     firebase.initializeApp(config);
-    //     let bandDB = firebase.database();
-    //     //scrubs the search boxes input for database
-    //     let $searchBox = $('#searchBox').val().trim();
-
-    //     let artistInfo = {
-    //         artistName: $searchBox,
-    //         dateAdded: firebase.database.ServerValue.TIMESTAMP
-    //     }
-    //     bandDB.ref('artist_info').push($searchBox); //pushes input of search to database.
-
+//        $recentDiv.append($P);
+//        $('#recents').append($recentDiv);
+//       // $($P).empty();
+//    });
+    
 //=============================================================
 
 //              Functions
@@ -36,21 +31,30 @@ $(document).ready(function() {
 //=============================================================
 
     // When an artists is searched
-    const itunesAlbumAJAX = () => {        
+    function itunesAlbumAJAX() {
+        // Prevents the page from refreshing on submit
         event.preventDefault();
 
+        //Note
+        //firebase stuff
+        // bandDB.ref('Artists').set({
+        //     name: artistInput
+        // });
+
+        // Holding variables for an Index and an array used to prevent duplicate albums
         let albumOnIndex = 0;        
         let albumArray = [];
 
         $(".collapsible-body").attr("style", "");
-        $("li").removeClass("active");
+        $(".album-list").removeClass("active");
 
         // Grabs the value of the search
-        let artistInput = $("#searchBox").val().trim();
+        let artistInput = $("#band-name").val().trim();
 
         // Query URL for album search, artistInput only var interaction
         let albumQueryURL = `https://itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
 
+        // Call for getting the album info
         $.ajax({
             url: albumQueryURL,
             method: "GET",
@@ -63,81 +67,74 @@ $(document).ready(function() {
             let albumResults = parsedAlbumResponse.results;
             console.log(albumResults)
 
+            $(".artist-image").attr("src", albumResults[0].artworkUrl100);
+            $(".card-title").text(albumResults[0].artistName)
+
             // Loops over the results
             $.each(albumResults, function(index, value) {
-                // If the track count isn't one append album (prevents singles from being appended)
-                // and if the track is in a holding array it wont trigger, (prevents duplicates)
+                // If the track count is bigger than one (prevents singles on first scan),
+                // the album isnt in the holding array (prevents duplicates),
+                // and the albumOnIndex is less than 5 (stops search at 5 results)
                 if(value.trackCount !== 1 && $.inArray(value.collectionCensoredName, albumArray) === -1 && albumOnIndex < 5) {
                     // Pushes the album name to a holding array
                     albumArray.push(value.collectionCensoredName);                    
 
-                    // Changes the text to the censored name
+                    // Changes the text of the album div we are on to the name
                     $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
 
+                    // Adds attributes for[album-name, album-length, album-index],
+                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-index", albumOnIndex);
 
-                    // Adds attributes for[album-name, album,length, artist-name, album-index],
-                    //  adds class of albumDiv (used for on click), appends $albumNamePar
-                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", albumOnIndex);
-
+                    // Changes the src of the img to reflect the album name
                     $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
 
+                    // Increments albumOnIndex to keep track of how many have been added
                     albumOnIndex++;
                 }
             })
 
-            $.each(albumResults, function(index, value) {
-                // Temporary
-                // Created img needed for interacting with the HTML
-                const $albumPictureImg = $("<img>");
+            // If weve added less than 5 albums (no need to re-scan if we already have 5)            
+            if(albumOnIndex < 5) {
+                // Loops over the result
+                $.each(albumResults, function(index, value) {
+                    // If the album isnt in the holding array (prevents duplicates),
+                    // and the albumOnIndex is less than 5 (stops search at 5 results)
+                    if($.inArray(value.collectionCensoredName, albumArray) === -1 && albumOnIndex < 5) {
+                        // Pushes the album name to a holding array
+                        albumArray.push(value.collectionCensoredName);                    
+    
+                        // Changes the text to the censored name
+                        $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
+    
+                        // Adds attributes for[album-name, album-length, album-index]
+                        $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-index", albumOnIndex);
 
-                // If the track count isn't one append album (prevents singles from being appended)
-                // and if the track is in a holding array it wont trigger, (prevents duplicates)
-                if($.inArray(value.collectionCensoredName, albumArray) === -1 && albumOnIndex < 5) {
-                    // Pushes the album name to a holding array
-                    albumArray.push(value.collectionCensoredName);                    
+                        // Changes the src of the img to reflect the album name    
+                        $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
 
-                    // Changes the text to the censored name
-                    $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
-
-                    // Adds attributes for[album-name, album,length, artist-name, album-index],
-                    //  adds class of albumDiv (used for on click), appends $albumNamePar
-                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", albumOnIndex);
-
-                    $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
-
-                    albumOnIndex++;
-                }
-            })
+                        // Increments albumOnIndex to keep track of how many have been added    
+                        albumOnIndex++;
+                    }
+                })
+            }            
         }) 
     }
 
-    // Temporary
-    // Could not get fat arrow functions to interact with "this", if addressed refactor with ES6
-        // const itunesSongAJAX = () => {
-
-        //     let $this = $(this);
-        //     console.log($this);
-
-        //     let albumName = $this.attr("data-album-name");
-        //     console.log(albumName);
-            
-        //     let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${trackCount}`
-        // }
-
     // Called when album is clicked
-    function TEMPitunesSongAJAX() {
+    function itunesSongAJAX() {
         // Shorthand
         let $thisAlbum = $(this);
         let albumName = $thisAlbum.attr("data-album-name");
         let albumLength = $thisAlbum.attr("data-album-length");
-        let albumArtistName = $thisAlbum.attr("data-artist-name");
         let forAlbumIndex = $thisAlbum.attr("data-index");
-
+        
+        // Empties the Div that was clicked
         $(".song" + forAlbumIndex + "Div").empty();
 
         // Query for Song search, limits to album length
         let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
 
+        // Call for getting the song info
         $.ajax({
             url: songQueryURL,
             method: "GET",
@@ -149,34 +146,41 @@ $(document).ready(function() {
             // Shorthand for interacting with JSON
             let songResults = parsedSongResponse.results;
             console.log(songResults);
+
+            // Adds a collection (materialize component) to interact with
             const $songCollection = $("<ul>");
             $songCollection.addClass("collection");
 
             // Loop for songs
             $.each(songResults, function(index, value) {
+                // Adds content to manipulate for the collection
                 const $songCollectionItem = $("<li>");
-
                 $songCollectionItem.addClass("collection-item");
 
                 // Changes the Text to the song name
-                $songCollectionItem.text(value.trackCensoredName).attr("data-song-name", value.trackCensoredName).attr("data-artist-name", albumArtistName);
+                $songCollectionItem.text(value.trackCensoredName).attr("data-song-name", value.trackCensoredName).attr("data-artist-name", value.artistName);
 
-                // Adds attributes for[song-name, artist-name], adds class of songDiv, appends songNamePar
+                // Appends the data for the collection to the collection
                 $($songCollection).append($songCollectionItem);
             });
-
+            
+            // Appends the collection to the div (which shows when an album is clicked) under the albume
             $(".song" + forAlbumIndex + "Div").append($songCollection);            
         });
     }
 
-    function TEMPlyricsAJAX() {
+    // Called when song is clicked
+    function lyricsAJAX() {
+        console.log("here");
+        // Shorthand
         let $thisSong = $(this);
         let songArtistName = $thisSong.attr("data-artist-name");
         let songName = $thisSong.attr("data-song-name");
-        const $lyricsDiv = $(".tempLyricsDiv");
-        $lyricsDiv.addClass("line-break lyricsDiv").empty();
+        const $lyricsModal = $("#lyricsModal");
+        const $lyricsPar = $(".lyricsPar");
+
+        $lyricsPar.empty();
         
-        // // Allows spaces eg. ".../coldplay/adventure of a life time", %20 workds aswell, NEEDS SPACES (toLowerCase)
         let queryURL2 = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
 
         $.ajax({
@@ -184,9 +188,36 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (lyricsResponse) {
             console.log(lyricsResponse);
-            $lyricsDiv.text(lyricsResponse.lyrics)
+            $lyricsPar.text(lyricsResponse.lyrics)
         });
+
+        $lyricsModal.modal("open");
     }
+
+    $('#band-name').keyup(function (event){
+        if (event.which === 13) {
+            itunesAlbumAJAX();
+            // wikiAJAXcall();
+
+            event.preventDefault();
+            
+            $(".title").addClass("min");
+
+            $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
+    
+            setTimeout(function(){
+                $(".bio").addClass("fadeInRightBig").removeClass("hide");
+                setTimeout(function(){
+                    $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+                    setTimeout(function(){
+                        $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
+                    },250)
+                },250)
+            }, 250)
+            
+            return false;
+        }
+    });
 
 //=============================================================
 
@@ -194,10 +225,42 @@ $(document).ready(function() {
 
 //=============================================================
 
-    $("#searchBtn").on("click", itunesAlbumAJAX);
-    $(".collapsible-header").on("click", TEMPitunesSongAJAX);
+    $("#search-btn").on("click", function (){
+        itunesAlbumAJAX();
+        // wikiAJAXcall();
+        $(".title").addClass("min");
+
+        $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
+
+        setTimeout(function(){
+            $(".bio").addClass("fadeInRightBig").removeClass("hide");
+            setTimeout(function(){
+                $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+                setTimeout(function(){
+                    $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
+                },250)
+            },250)
+        }, 250)
+    });
+
+    $('#band-name').each(function (){
+        const elem = $(this);
+        // Look for changes in the value
+        elem.bind("changes input paste", function (event) {
+            // If value has changed...
+            if (elem.val() != "") {
+                $(".c-btn").removeClass("disabled").addClass("hvr-icon-grow");
+            } else {
+                $(".c-btn").addClass("disabled").removeClass("hvr-icon-grow");
+            };
+        });
+    });
+
+    $(".collapsible-header").on("click", itunesSongAJAX);
+    $(".album-list").on("click", ".collection-item", lyricsAJAX)
 
 //=============================================================
 
-    $('.collapsible').collapsible();   
+    $(".collapsible").collapsible();
+    $(".modal").modal()  
 });

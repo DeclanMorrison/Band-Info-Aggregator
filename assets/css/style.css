@@ -1,30 +1,145 @@
+/* Colors
+ - White: #F5F5F5, grey lighten-4
+ - Black: #212121, grey darken-4
+ - Blue: #00b0ff, light-blue accent-3
+ - Red: #ff5252, red accent-2
+ - Yellow: #ffee58, yellow lighten-1
+  */
+
+
 body {
-    background: #5DA2D5;
+    background: #F5F5F5;
 }
 
-.fullGroupDiv {
-    background: #5DA2D5;
-    margin: 5px;
-    padding: 5px;
+.lyricsPar {
+    text-align: center;
 }
 
-.albumDiv {
-    background: #F78888;
-    margin: 5px;
-    padding: 5px;
+.card-title {
+    text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
 }
 
-.songDiv {
-    background: #F3D250;
-    margin: 2px;
+.collapsible-body {
+    padding: 0px;
 }
 
-.lyricsDiv {
-    background: #5DA2D5;
-    margin: 5px;
-    padding: 5px;
+.closeLyricsButton {
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
 }
 
 .line-break {
     white-space: pre-wrap;
+}
+
+.search-bar{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+}
+
+/* label focus color */
+.input-field input:focus + label {
+    color: #00b0ff !important;
+}
+
+/* label underline focus color */
+.row .input-field input:focus {
+    box-shadow: 0 1px 0 0 #00b0ff !important
+}
+ 
+.c-btn{
+    position: relative;
+    top: 20px;
+
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.c-btn:hover{
+    position: relative;
+    top: 20px;
+
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.c-btn:focus{
+    position: relative;
+    top: 20px;
+
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.google{
+    position: absolute;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: auto;
+}
+
+.minus{
+    position: absolute;
+    left: 74%;
+    transform: translate(-50%, -50%);
+
+    width: 4vw;
+    height: 1.25vw;
+
+    background-color: #888;
+}
+
+.logo{
+    position: absolute;
+    top: 0vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.title{
+    transition: top 1s;
+    width: 100vw;
+    height: 50vh;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.min{
+    transition: top 1s;
+    top: 7%;
+}
+
+.main{
+    margin-top: 75px;
+
+    z-index: 2;
+}
+
+.footer-copyright{
+    position: absolute;
+    bottom: 2%;
+    left: 50%;
+    margin-left: -55.69px;
+}
+
+/* These pieces of code hide the scrollbar, taken from Stack Overflow, 
+here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll */
+
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
 }

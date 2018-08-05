@@ -10,6 +10,8 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
     <!-- CSS IMPORTS -->
 
     <!-- Reset -->
@@ -43,16 +45,21 @@
                 <i class="material-icons right">send</i>
             </button>
         </form>
-        <div class="recent">
-            <p class"recentp"></p>
-        </div>
+        <div id="recents"></div>
+        <div id="top"></div>
     </div>
 
     <div class="tempDiv"></div>
 
     <!-- Will be a modal -->
-    <div class="tempLyricsDiv">
-        <div class="popup"></div>
+    <div id="modal1" class="modal">
+        <div class="modal-content" id="tempLyricsDiv">
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        </div>
+      </div>
+  </div>
     </div>
 
 

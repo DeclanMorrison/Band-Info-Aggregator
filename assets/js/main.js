@@ -1,7 +1,6 @@
 $(document).ready(function () {
+    $('#modal1').modal();
 
-    //const database_config = () => {
-    //configuring database
     var config = {
         apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
         authDomain: "band-aggregator.firebaseapp.com",
@@ -12,8 +11,65 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
     let bandDB = firebase.database();
+
+    $('#top').hide();
+    //loops through entirity of database checks records
+    bandDB.ref('searches/').orderByChild('searchCount') //limits the amound appended to 5. 
+        .limitToLast(5).on('value', function (snapshot) {
+            let str = '<ul>'  
+             snapshot.forEach(function(childSnapshot){
+                console.log(childSnapshot.val());
+                let childRecord = childSnapshot.val(); //sets variable of childSnapshot
+                str += '<li>' + childRecord.artist + ': ' + childRecord.searchCount + '</li>'    
+            });
+        str += '</ul>';
+        $('#top').html(str);
+    });
+    $('#searchBtn').on('click', function () {
+        $('#top').show();
+        let searchTerm = $('#searchBox').val().toLowerCase().trim();
+        //var userId = firebase.auth().currentUser.uid;
+        var searchCount = 0;
+        bandDB.ref('searches/' + searchTerm).on('value', function (snapshot) {
+            searchCount = (snapshot.val() && snapshot.val().searchCount) || 0;
+            console.log('snap' + snapshot);
+        });
+        searchCount = searchCount + 1;
+        bandDB.ref('searches/' + searchTerm).set({
+            searchCount: searchCount, 
+            artist: searchTerm
+        }, function(error){
+            if(error){
+                console.log(error);
+            } else {
+                console.log('data saved!');
+            }
+        });
+        
+        /*bandDB.ref('searches/').on('value', function (snapshot) {
+            snapshot.forEach(function(childSnapshot){
+                console.log(childSnapshot.val());
+            });
+        });*/
+    });
+
+    var searchRef = firebase.database().ref('searches/');
+        searchRef.on('value', function(snapshot) {
+        console.log(snapshot);
+    });
+
+    /*let writeUserData = () => {
+     
+          });
+        };*/
+
+    //const database_config = () => {
+    //configuring database
+
+    
+    let artistCount = 0;
     //scrubs the search boxes input for database
-    // let $searchBox = $('#searchBox').val().trim();
+    let $searchBox = $('#searchBox').val().trim();
 
     /*let ref = firebase.database().ref('Artists/artistName');
     ref.once("value")
@@ -44,7 +100,7 @@ $(document).ready(function () {
         // Grabs the value of the search
         let artistInput = $("#searchBox").val().trim();
 
-      //  bandDB.ref('Artists').push(artistInfo);
+        //  bandDB.ref('Artists').push(artistInfo);
 
         // Temporary
         // Static Div on HTML
@@ -53,7 +109,7 @@ $(document).ready(function () {
         // Temporary
         // Empties the display
         $tempDiv.empty();
-       // `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
+        // `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
         // Query URL for album search, artistInput only var interaction
         let albumQueryURL = `https://itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
 
@@ -68,7 +124,7 @@ $(document).ready(function () {
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
             let albumArray = [];
-        
+
             // Loops over the results
             $.each(albumResults, function (index, value) {
 
@@ -116,37 +172,39 @@ $(document).ready(function () {
                 },
                 dateAdded: firebase.database.ServerValue.TIMESTAMP
             }
-            
-            bandDB.ref('Artists').on("value", function(snapshot){
-            
+
+            bandDB.ref('Artists').on("value", function (snapshot) {
+                $('#recents').empty();
                 console.log('here');
                 let mostRecent = snapshot.val().name;
                 console.log(mostRecent);
                 JSON.stringify(mostRecent);
-                let $recentDiv = $(".recent");
+                let $recentDiv = $("#recents");
                 let $P = $('<p>').text('Most Recent: ' + mostRecent);
 
                 $recentDiv.append($P);
-                
+                $('#recents').append($recentDiv);
+                // $($P).empty();
             });
             bandDB.ref('Artists').set({
                 name: artistInput
             });
-           
+            //$($P).empty();
+
         })
-        
+
     }
-   /* let add_recents = () => {
-        bandDB.ref('recent_artists').on("child_added", function(snapshot){
-            let recents = $('#searchBox').snapshot.val().trim();
-            console.log(reached);
-            let $recentDiv = $('<div>');
-            let $appRecents = $('<p>');
-            $appRecents.text(recents);
-            $recentDiv.append($p);
-        })
-    }*/
-    
+    /* let add_recents = () => {
+         bandDB.ref('recent_artists').on("child_added", function(snapshot){
+             let recents = $('#searchBox').snapshot.val().trim();
+             console.log(reached);
+             let $recentDiv = $('<div>');
+             let $appRecents = $('<p>');
+             $appRecents.text(recents);
+             $recentDiv.append($p);
+         })
+     }*/
+
 
     // Temporary
     // Could not get fat arrow functions to interact with "this", if addressed refactor with ES6
@@ -220,7 +278,7 @@ $(document).ready(function () {
         let $thisSong = $(this);
         let songArtistName = $thisSong.attr("data-artist-name");
         let songName = $thisSong.attr("data-song-name");
-        const $lyricsDiv = $(".tempLyricsDiv");
+        const $lyricsDiv = $("#tempLyricsDiv");
         $lyricsDiv.addClass("line-break lyricsDiv").empty();
 
         // // Allows spaces eg. ".../coldplay/adventure of a life time", %20 workds aswell, NEEDS SPACES (toLowerCase)
@@ -231,8 +289,12 @@ $(document).ready(function () {
             method: "GET"
         }).then(function (lyricsResponse) {
             console.log(lyricsResponse)
-            $lyricsDiv.text(lyricsResponse.lyrics)
-        
+            $lyricsDiv.text(lyricsResponse.lyrics);
+            $(document).on('click', '.songDiv', function () {
+                $lyricsDiv.text(lyricsResponse.lyrics);
+                $('#modal1').modal('open');
+            });
+
         });
     }
 

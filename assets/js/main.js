@@ -8,23 +8,6 @@ $(document).ready(function () {
     //              FireBase
 
     //=============================================================
-    //Note
-    //Firebase stuff
-    // bandDB.ref('Artists').on("value", function(snapshot){
-    //     $('#recents').empty();
-    //        console.log('here');
-    //        let mostRecent = snapshot.val().name;
-    //        console.log(mostRecent);
-    //        JSON.stringify(mostRecent);
-    //        let $recentDiv = $("#recents");
-    //        let $P = $('<p>').text('Most Recent: ' + mostRecent);
-
-    //        $recentDiv.append($P);
-    //        $('#recents').append($recentDiv);
-    //       // $($P).empty();
-    //    });
-
-
     var config = {
         apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
         authDomain: "band-aggregator.firebaseapp.com",
@@ -89,8 +72,87 @@ $(document).ready(function () {
 
     //=============================================================
 
+    const getFirstParagraph = (html) => {
+        const $testDiv = $("<div>").addClass("html-parse hide").append($("body"));
+        $testDiv.html(html);
+
+
+    }
+
+
+    const mediaWikiSummaryAJAX = () => {
+        let artistInput = $("#band-name").val().trim();
+        let albumQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${artistInput}`
+
+        $(".band-name").text(artistInput);
+        // Call for getting the band wiki info
+        $.ajax({
+            url: albumQueryURL,
+            method: "GET",
+            datatype: "json",
+        }).then(function (wikiResponse) {
+            console.log(wikiResponse);
+
+            const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
+            const extract = (Object.values(wikiResponse.query.pages)[0]).extract;
+            console.log(extract);
+
+            mediaWikiimageAJAX(pageID);
+
+            $(".html-parse").text(extract);
+
+            $(".bio").html(extract);
+        });
+    };
+
+    const mediaWikiimageAJAX = (pageID) => {
+
+        let albumQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pageids=${pageID}`
+
+        // Call for getting the band wiki picture
+        $.ajax({
+            url: albumQueryURL,
+            method: "GET",
+            datatype: "json",
+        }).then(function (wikiResponse) {
+            console.log(wikiResponse);
+            $(".artist-image").attr("src", (Object.values(wikiResponse.query.pages)[0]).original.source);
+            animateIn();
+        });
+    };
+
+
+
+    //Gets the artists AMG ID instead of searching albums by string. This is used instead of search, as it returns more reliable results.
+    const getArtistAMGID = () => {
+        // Grabs the value of the search
+        let artistInput = $("#band-name").val().trim();
+
+        // Query URL for album search, artistInput only var interaction
+        //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
+        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=1&entity=album&term=${artistInput}`
+
+        // Call for getting the album info
+        $.ajax({
+            url: albumQueryURL,
+            method: "GET",
+            datatype: "json",
+        }).then(function (artistResponse) {
+            console.log('Got artist');
+            // Parsing the response to make it a JSON object
+            let parsedArtistResponse = JSON.parse(artistResponse);
+
+            // Shorthand for navigating the object
+            let artistID = parsedArtistResponse.results[0].amgArtistId;
+            console.log(artistID);
+            itunesAlbumAJAX(artistID);
+        });
+    };
+
+
+
     // When an artists is searched
-    function itunesAlbumAJAX() {
+    function itunesAlbumAJAX(artistID) {
         // Prevents the page from refreshing on submit
 
         // Holding variables for an Index and an array used to prevent duplicate albums
@@ -105,15 +167,16 @@ $(document).ready(function () {
 
         // Query URL for album search, artistInput only var interaction
         //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
-        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
-
+        // let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=5&entity=album&term=${artistInput}`
+        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=5`
+        console.log(albumQueryURL);
         // Call for getting the album info
         $.ajax({
             url: albumQueryURL,
             method: "GET",
             datatype: "json",
         }).then(function (albumResponse) {
-            console.log('call went through');
+            console.log('Got artist albums');
             // Parsing the response to make it a JSON object
             let parsedAlbumResponse = JSON.parse(albumResponse);
 
@@ -121,16 +184,19 @@ $(document).ready(function () {
             let albumResults = parsedAlbumResponse.results;
             console.log(albumResults)
 
-            $(".artist-image").attr("src", albumResults[0].artworkUrl100);
+            //Removes album metadata, first index of array
+            albumResults.shift();
+
+            // $(".artist-image").attr("src", albumResults[0].artworkUrl100);
             $(".card-title").text("");
 
             // Loops over the results
             $.each(albumResults, function (index, value) {
                 // If the track count is bigger than one (prevents singles on first scan),
                 // the album isnt in the holding array (prevents duplicates),
-                // and the albumOnIndex is less than 5 (stops search at 5 results)
+                // and the albumOnIndex is less than 5 (stops search at 5 results)  && albumOnIndex < 5
                 if (value.trackCount !== 1 &&
-                    $.inArray(value.collectionCensoredName, albumArray) === -1 && albumOnIndex < 5) {
+                    $.inArray(value.collectionCensoredName, albumArray) === -1) {
                     // Pushes the album name to a holding array
                     albumArray.push(value.collectionCensoredName);
 
@@ -138,7 +204,7 @@ $(document).ready(function () {
                     $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName).addClass("album-name truncate");
 
                     // Adds attributes for[album-name, album-length, album-index],
-                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-index", albumOnIndex).addClass("valign-wrapper");
+                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-index", albumOnIndex).attr("data-album-id", value.collectionId).addClass("valign-wrapper");
 
                     // Changes the src of the img to reflect the album name
                     $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
@@ -221,16 +287,23 @@ $(document).ready(function () {
     function itunesSongAJAX() {
         // Shorthand
         let $thisAlbum = $(this);
-        let albumName = $thisAlbum.attr("data-album-name");
-        let albumLength = $thisAlbum.attr("data-album-length");
+        //Old way of searching for songs on an album
+        // let albumName = $thisAlbum.attr("data-album-name");
+
+        //Stops from loading one too many songs
+        let albumLength = ($thisAlbum.attr("data-album-length") - 1) ;
         let forAlbumIndex = $thisAlbum.attr("data-index");
+        let albumID = $thisAlbum.attr("data-album-id");
 
         // Empties the Div that was clicked
         $(".song" + forAlbumIndex + "Div").empty();
 
         // Query for Song search, limits to album length
         //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
-        let songQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
+        
+        // Old queryURL
+        // let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
+        let songQueryURL = `https://itunes.apple.com/lookup?id=${albumID}&entity=song&limit=${albumLength}`;
 
         // Call for getting the song info
         $.ajax({
@@ -244,6 +317,9 @@ $(document).ready(function () {
             // Shorthand for interacting with JSON
             let songResults = parsedSongResponse.results;
             console.log(songResults);
+
+            //Removes first index, which is album meta data
+            songResults.shift();
 
             // Adds a collection (materialize component) to interact with
             const $songCollection = $("<ul>");
@@ -325,18 +401,12 @@ $(document).ready(function () {
         }
     });
 
-    //=============================================================
-
-    //              On Clicks
-
-    //=============================================================
-
-    $("#search-btn").on("click", function () {
-        itunesAlbumAJAX();
-        // wikiAJAXcall();
+    const animateIn = () => {
         $(".title").addClass("min");
 
         $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
+        $(".band-name").addClass("fadeInRightBig").removeClass("hide");
+        fitty(".band-name");
 
         setTimeout(function () {
             $(".bio").addClass("fadeInRightBig").removeClass("hide");
@@ -344,9 +414,20 @@ $(document).ready(function () {
                 $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
                 setTimeout(function () {
                     $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
-                }, 250)
-            }, 250)
-        }, 250)
+                }, 250);
+            }, 250);
+        }, 250);
+    };
+
+    //=============================================================
+
+    //              On Clicks
+
+    //=============================================================
+
+    $("#search-btn").on("click", function () {
+        getArtistAMGID();
+        mediaWikiSummaryAJAX();
     });
 
     $('#band-name').each(function () {

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700|Roboto+Slab:100,400,700|Roboto:100,400,900');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700|Roboto+Slab:100,400,700|Roboto:100,400,900|Fjalla+One');
 
 
 /* Colors
@@ -144,6 +144,16 @@ body {
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 20px;
     font-weight: 300;
+}
+
+.band-name{
+    font-family: 'Fjalla One';
+    margin-left: -15px;
+}
+
+.fit{
+    display: inline-block;
+    white-space: nowrap;
 }
 
 /* These pieces of code hide the scrollbar, taken from Stack Overflow, 

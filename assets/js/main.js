@@ -26,7 +26,7 @@ $(document).ready(function () {
         .limitToLast(5).on('value',  (snapshot) => { //limits the amound appended to 5. 
             let topFive = '<ul>'
             snapshot.forEach((childSnapshot) => {
-                console.log(childSnapshot.val());
+                //console.log(childSnapshot.val());
                 let childRecord = childSnapshot.val(); //sets variable of childSnapshot
                 topFive += '<li>' + childRecord.artist + ' Searches = ' +
                     childRecord.searchCount + '</li>'
@@ -43,7 +43,7 @@ $(document).ready(function () {
 
         bandDB.ref('searches/' + searchTerm).on('value',  (snapshot) => {
             searchCount = (snapshot.val() && snapshot.val().searchCount) || 0;
-            //console.log('snap' + snapshot);
+            ////console.log('snap' + snapshot);
         });
 
         searchCount = searchCount + 1;
@@ -53,16 +53,16 @@ $(document).ready(function () {
             artist: searchTerm
         }, (error)=> {
             if (error) {
-                console.log(error);
+                //console.log(error);
             } else {
-                console.log('data saved madude');
+                //console.log('data saved madude');
             }
         });
     })
         //to show what the current snapshot is
     let searchRef = firebase.database().ref('searches/');
     searchRef.on('value', (snapshot) => {
-        console.log(snapshot);
+        //console.log(snapshot);
     });
 
 
@@ -71,38 +71,70 @@ $(document).ready(function () {
     //              Functions
 
     //=============================================================
+    const mediaWikiSummaryAJAX = (page) => {
+        console.log(page);
+        if (page === undefined){
+            let artistInput = $("#band-name").val().trim();
+            let cleanedInput = wikiParseURL(artistInput);
+            console.log(cleanedInput);
 
-    const getFirstParagraph = (html) => {
-        const $testDiv = $("<div>").addClass("html-parse hide").append($("body"));
-        $testDiv.html(html);
+            let albumQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${cleanedInput}`
+            
+            // Call for getting the band wiki info
+            $.ajax({
+                url: albumQueryURL,
+                method: "GET",
+                datatype: "json",
+            }).then(function (wikiResponse) {
+                console.log(wikiResponse);
+                const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
+                const extract = (Object.values(wikiResponse.query.pages)[0]).extract;
 
+                if (extract === ""){
+                    cleanedInput = "The%20" + cleanedInput;
+                    mediaWikiSummaryAJAX(cleanedInput);
+                }else{
+                    $(".band-name").text((Object.values(wikiResponse.query.pages)[0]).title);
+                    //console.log(extract);
 
-    }
+                    mediaWikiimageAJAX(pageID);
 
+                    $extract = $(extract);
+                    $(".bio br").remove();
+                    $(`.bio p:not(".read-more")`).remove();
+                    
+                    $(".bio").prepend($extract);
+                    $(".bio p:first").remove();
+                    $("<br>").insertAfter(".bio p");
+                };
+            });
+        }else if (page !== undefined){
+            
+            let albumQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${page}`
 
-    const mediaWikiSummaryAJAX = () => {
-        let artistInput = $("#band-name").val().trim();
-        let albumQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${artistInput}`
+            $.ajax({
+                url: albumQueryURL,
+                method: "GET",
+                datatype: "json",
+            }).then(function (wikiResponse) {
+                console.log(wikiResponse);
+                $(".band-name").text((Object.values(wikiResponse.query.pages)[0]).title);
 
-        $(".band-name").text(artistInput);
-        // Call for getting the band wiki info
-        $.ajax({
-            url: albumQueryURL,
-            method: "GET",
-            datatype: "json",
-        }).then(function (wikiResponse) {
-            console.log(wikiResponse);
+                const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
+                const extract = (Object.values(wikiResponse.query.pages)[0]).extract;
+                //console.log(extract);
 
-            const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
-            const extract = (Object.values(wikiResponse.query.pages)[0]).extract;
-            console.log(extract);
+                mediaWikiimageAJAX(pageID);
 
-            mediaWikiimageAJAX(pageID);
-
-            $(".html-parse").text(extract);
-
-            $(".bio").html(extract);
-        });
+                $extract = $(extract);
+                $(".bio br").remove();
+                $(`.bio p:not(".read-more")`).remove();
+                
+                $(".bio").prepend($extract);
+                $(".bio p:first").remove();
+                $("<br>").insertAfter(".bio p");
+            });
+        };
     };
 
     const mediaWikiimageAJAX = (pageID) => {
@@ -116,7 +148,12 @@ $(document).ready(function () {
             datatype: "json",
         }).then(function (wikiResponse) {
             console.log(wikiResponse);
-            $(".artist-image").attr("src", (Object.values(wikiResponse.query.pages)[0]).original.source);
+            if ((Object.values(wikiResponse.query.pages)[0]).original !== undefined){
+                $(".artist-image").attr("src", (Object.values(wikiResponse.query.pages)[0]).original.source);
+            }else{
+                $(".artist-image").attr("src", ($(".album0Img").attr("src")));
+            };
+            
             animateIn();
         });
     };
@@ -138,13 +175,13 @@ $(document).ready(function () {
             method: "GET",
             datatype: "json",
         }).then(function (artistResponse) {
-            console.log('Got artist');
+            //console.log('Got artist');
             // Parsing the response to make it a JSON object
             let parsedArtistResponse = JSON.parse(artistResponse);
 
             // Shorthand for navigating the object
             let artistID = parsedArtistResponse.results[0].amgArtistId;
-            console.log(artistID);
+            //console.log(artistID);
             itunesAlbumAJAX(artistID);
         });
     };
@@ -169,20 +206,20 @@ $(document).ready(function () {
         //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
         // let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=5&entity=album&term=${artistInput}`
         let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=5`
-        console.log(albumQueryURL);
+        //console.log(albumQueryURL);
         // Call for getting the album info
         $.ajax({
             url: albumQueryURL,
             method: "GET",
             datatype: "json",
         }).then(function (albumResponse) {
-            console.log('Got artist albums');
+            //console.log('Got artist albums');
             // Parsing the response to make it a JSON object
             let parsedAlbumResponse = JSON.parse(albumResponse);
 
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
-            console.log(albumResults)
+            //console.log(albumResults)
 
             //Removes album metadata, first index of array
             albumResults.shift();
@@ -251,9 +288,9 @@ $(document).ready(function () {
             //
             bandDB.ref('Artists').on("value", (snapshot) => {
                 $('#recents').empty();
-                console.log('here');
+                //console.log('here');
                 let mostRecent = snapshot.val().name;
-                // console.log(mostRecent);
+                // //console.log(mostRecent);
                 JSON.stringify(mostRecent);  //changes output from object to str
                 let $recentDiv = $("#recents");
                 let $P = $('<p>').text('Most Recent: ' + mostRecent);
@@ -270,11 +307,11 @@ $(document).ready(function () {
                     let snapShot = snapshot.val();
                     //snapShot.val();
                     JSON.stringify(snapShot);
-                    console.log(snapShot);
-                    console.log('here');
-                       // console.log(previousSnap.val());
+                    //console.log(snapShot);
+                    //console.log('here');
+                       // //console.log(previousSnap.val());
                     //  let lowestKey = previousSnap.getChildren().val();
-                     // console.log(lowestKey);
+                     // //console.log(lowestKey);
                    
                 })    
         
@@ -316,7 +353,7 @@ $(document).ready(function () {
 
             // Shorthand for interacting with JSON
             let songResults = parsedSongResponse.results;
-            console.log(songResults);
+            //console.log(songResults);
 
             //Removes first index, which is album meta data
             songResults.shift();
@@ -347,7 +384,7 @@ $(document).ready(function () {
 
     // Called when song is clicked
     function lyricsAJAX() {
-        console.log("here");
+        //console.log("here");
         // Shorthand
         let $thisSong = $(this);
         let songArtistName = sanitizeString($thisSong.attr("data-artist-name"));
@@ -363,17 +400,32 @@ $(document).ready(function () {
             url: queryURL2,
             method: "GET"
         }).then(function (lyricsResponse) {
-            console.log(lyricsResponse);
+            //console.log(lyricsResponse);
             $lyricsPar.text(lyricsResponse.lyrics)
+            console.log(lyricsResponse.lyrics);
             $lyricsModal.modal("open");
         });   
     };
 
     const sanitizeString = (str) => {
-        console.log(str);
+        //console.log(str);
         str = str.replace(/[^a-z0-9 \_-]/gim,"");
-        console.log(str);
+        //console.log(str);
         return str.trim();
+    }
+
+    const wikiParseURL = (str) => {
+        str = toTitleCase(str);
+        //console.log(str);
+        str = str.replace(/[" "]/gim,"%20");
+        //console.log(str);
+        return str.trim();
+    }
+
+    const toTitleCase = (str) => {
+        return str.replace(/\w\S*/g, function(txt){
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
     }
 
     $('#search-btn').on("keyup keypress", function (event) {
@@ -406,7 +458,7 @@ $(document).ready(function () {
 
         $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
         $(".band-name").addClass("fadeInRightBig").removeClass("hide");
-        fitty(".band-name");
+        fitty(".band-name",{maxSize: 325});
 
         setTimeout(function () {
             $(".bio").addClass("fadeInRightBig").removeClass("hide");
@@ -450,4 +502,48 @@ $(document).ready(function () {
 
     $(".collapsible").collapsible();
     $(".modal").modal()
-});
+    $(".read-more").on("click", function(){
+        let totalHeight = 0
+
+        let $button = $(this);
+        console.log($button);
+        let $up = $button.parent();
+        let $ps = $up.find("p:not('.read-more')");
+        
+        if ($(this).attr("data-state") === "open"){
+            // measure how tall inside should be by adding together heights of all inside paragraphs (except read-more paragraph)
+            $ps.each(function() {
+                totalHeight += $(this).outerHeight();
+                totalHeight += 25;
+            });
+                    
+            $up
+                .css({
+                // Set height to prevent instant jumpdown when max height is removed
+                "height": $up.height(),
+                "max-height": 9999
+                })
+                .animate({
+                "height": totalHeight += 48,
+                });
+            
+            // fade out read-more
+            $(".read-more a").text("Close");
+            $button.attr("data-state","close");
+            
+            // prevent jump-down
+            return false;
+        }else if ($(this).attr("data-state") === "close"){
+            
+            $up
+                .animate({
+                "height": 240,
+                });
+
+            $(".read-more a").text("Read More");
+            $button.attr("data-state", "open")
+
+            return false;
+        };  
+    });
+}); 

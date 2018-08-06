@@ -12,6 +12,7 @@
 
 body {
     background: #F5F5F5;
+    color: #212121
 }
 
 .lyricsPar {
@@ -149,11 +150,47 @@ body {
 .band-name{
     font-family: 'Fjalla One';
     margin-left: -15px;
+    margin-top: 30px;
 }
 
 .fit{
     display: inline-block;
     white-space: nowrap;
+}
+
+.bio{
+    max-height: 240px;
+    position: relative;
+    overflow: hidden; 
+
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 25px;
+}
+
+.bio .read-more { 
+    background-color: transparent;
+    position: absolute; 
+    bottom: 0px; 
+    left: 0px;
+    width: 100%; 
+    text-align: center; 
+    margin: 0; padding: 30px 0; 
+
+    border-style: none;
+        
+    /* "transparent" only works here because == rgba(0,0,0,0) */
+    background: linear-gradient(rgba(2,0,36,0) 0%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
+}
+
+.read-more-button{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-family: 'Roboto Slab';
+    font-weight: 700;
+    font-size: 30px;
 }
 
 /* These pieces of code hide the scrollbar, taken from Stack Overflow, 

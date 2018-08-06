@@ -68,7 +68,7 @@ $(document).ready(function() {
             console.log(albumResults)
 
             $(".artist-image").attr("src", albumResults[0].artworkUrl100);
-            $(".card-title").text(albumResults[0].artistName)
+            $(".card-title").text("");
 
             // Loops over the results
             $.each(albumResults, function(index, value) {
@@ -80,10 +80,10 @@ $(document).ready(function() {
                     albumArray.push(value.collectionCensoredName);                    
 
                     // Changes the text of the album div we are on to the name
-                    $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
+                    $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName).addClass("album-name truncate");
 
                     // Adds attributes for[album-name, album-length, album-index],
-                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-index", albumOnIndex);
+                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-index", albumOnIndex).addClass("valign-wrapper");
 
                     // Changes the src of the img to reflect the album name
                     $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
@@ -174,8 +174,8 @@ $(document).ready(function() {
         console.log("here");
         // Shorthand
         let $thisSong = $(this);
-        let songArtistName = $thisSong.attr("data-artist-name");
-        let songName = $thisSong.attr("data-song-name");
+        let songArtistName = sanitizeString($thisSong.attr("data-artist-name"));
+        let songName = sanitizeString($thisSong.attr("data-song-name"));
         const $lyricsModal = $("#lyricsModal");
         const $lyricsPar = $(".lyricsPar");
 
@@ -189,9 +189,15 @@ $(document).ready(function() {
         }).then(function (lyricsResponse) {
             console.log(lyricsResponse);
             $lyricsPar.text(lyricsResponse.lyrics)
-        });
+            $lyricsModal.modal("open");
+        });   
+    };
 
-        $lyricsModal.modal("open");
+    const sanitizeString = (str) => {
+        console.log(str);
+        str = str.replace(/[^a-z0-9 \_-]/gim,"");
+        console.log(str);
+        return str.trim();
     }
 
     $('#band-name').keyup(function (event){

@@ -23,7 +23,7 @@ $(document).ready(function () {
     $('#top').hide();
     //loops through entirity of database checks records
     bandDB.ref('searches/').orderByChild('searchCount')
-        .limitToLast(5).on('value',  (snapshot) => { //limits the amound appended to 5. 
+        .limitToLast(5).on('value', (snapshot) => { //limits the amound appended to 5. 
             let topFive = '<ul>'
             snapshot.forEach((childSnapshot) => {
                 //console.log(childSnapshot.val());
@@ -38,10 +38,10 @@ $(document).ready(function () {
     $('#search-btn').on('click', () => {
         event.preventDefault();
         $('#top').show();
-        let searchTerm = $('#band-name').val().toLowerCase().trim();
+        let searchTerm = $('#search-term').val().toLowerCase().trim();
         var searchCount = 0;
 
-        bandDB.ref('searches/' + searchTerm).on('value',  (snapshot) => {
+        bandDB.ref('searches/' + searchTerm).on('value', (snapshot) => {
             searchCount = (snapshot.val() && snapshot.val().searchCount) || 0;
             ////console.log('snap' + snapshot);
         });
@@ -51,15 +51,15 @@ $(document).ready(function () {
         bandDB.ref('searches/' + searchTerm).set({
             searchCount: searchCount,
             artist: searchTerm
-        }, (error)=> {
+        }, (error) => {
             if (error) {
-                //console.log(error);
+                console.log(error);
             } else {
-                //console.log('data saved madude');
+                console.log('data saved ma-Dude');
             }
         });
     })
-        //to show what the current snapshot is
+    //to show what the current snapshot is
     let searchRef = firebase.database().ref('searches/');
     searchRef.on('value', (snapshot) => {
         //console.log(snapshot);
@@ -73,13 +73,13 @@ $(document).ready(function () {
     //=============================================================
     const mediaWikiSummaryAJAX = (page) => {
         console.log(page);
-        if (page === undefined){
-            let artistInput = $("#band-name").val().trim();
+        if (page === undefined) {
+            let artistInput = $("#search-term").val().trim();
             let cleanedInput = wikiParseURL(artistInput);
             console.log(cleanedInput);
 
             let albumQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${cleanedInput}`
-            
+
             // Call for getting the band wiki info
             $.ajax({
                 url: albumQueryURL,
@@ -90,10 +90,10 @@ $(document).ready(function () {
                 const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
                 const extract = (Object.values(wikiResponse.query.pages)[0]).extract;
 
-                if (extract === ""){
+                if (extract === "") {
                     cleanedInput = "The%20" + cleanedInput;
                     mediaWikiSummaryAJAX(cleanedInput);
-                }else{
+                } else {
                     $(".band-name").text((Object.values(wikiResponse.query.pages)[0]).title);
                     //console.log(extract);
 
@@ -102,14 +102,14 @@ $(document).ready(function () {
                     $extract = $(extract);
                     $(".bio br").remove();
                     $(`.bio p:not(".read-more")`).remove();
-                    
+
                     $(".bio").prepend($extract);
                     $(".bio p:first").remove();
                     $("<br>").insertAfter(".bio p");
                 };
             });
-        }else if (page !== undefined){
-            
+        } else if (page !== undefined) {
+
             let albumQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${page}`
 
             $.ajax({
@@ -129,7 +129,7 @@ $(document).ready(function () {
                 $extract = $(extract);
                 $(".bio br").remove();
                 $(`.bio p:not(".read-more")`).remove();
-                
+
                 $(".bio").prepend($extract);
                 // $(".bio p:first").remove();
                 $("<br>").insertAfter(".bio p");
@@ -148,12 +148,12 @@ $(document).ready(function () {
             datatype: "json",
         }).then(function (wikiResponse) {
             console.log(wikiResponse);
-            if ((Object.values(wikiResponse.query.pages)[0]).original !== undefined){
+            if ((Object.values(wikiResponse.query.pages)[0]).original !== undefined) {
                 $(".artist-image").attr("src", (Object.values(wikiResponse.query.pages)[0]).original.source);
-            }else{
+            } else {
                 $(".artist-image").attr("src", ($(".album0Img").attr("src")));
             };
-            
+
             animateIn();
         });
     };
@@ -163,7 +163,7 @@ $(document).ready(function () {
     //Gets the artists AMG ID instead of searching albums by string. This is used instead of search, as it returns more reliable results.
     const getArtistAMGID = () => {
         // Grabs the value of the search
-        let artistInput = $("#band-name").val().trim();
+        let artistInput = $("#search-term").val().trim();
 
         // Query URL for album search, artistInput only var interaction
         //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
@@ -200,7 +200,7 @@ $(document).ready(function () {
         $(".album-list").removeClass("active");
 
         // Grabs the value of the search
-        let artistInput = $("#band-name").val().trim();
+        let artistInput = $("#search-term").val().trim();
 
         // Query URL for album search, artistInput only var interaction
         //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
@@ -244,7 +244,6 @@ $(document).ready(function () {
                             <p class="album${albumOnIndex}Name album-name truncate">${value.collectionCensoredName}</p>
                         </div>
                         <div class="collapsible-body song${albumOnIndex}Div">
-
                         </div>
                     </li>`);
 
@@ -272,7 +271,6 @@ $(document).ready(function () {
                                 <p class="album${albumOnIndex}Name album-name truncate">${value.collectionCensoredName}</p>
                             </div>
                             <div class="collapsible-body song${albumOnIndex}Div">
-
                             </div>
                         </li>`);
 
@@ -283,7 +281,7 @@ $(document).ready(function () {
                     }
                 })
             }
-            $('#band-name').val(''); //last fix
+            $('#search-term').val(''); //last fix
 
             let artistInfo = { //structure of how all inputs will be added
                 artistName: {
@@ -298,7 +296,7 @@ $(document).ready(function () {
                 //console.log('here');
                 let mostRecent = snapshot.val().name;
                 // //console.log(mostRecent);
-                JSON.stringify(mostRecent);  //changes output from object to str
+                JSON.stringify(mostRecent); //changes output from object to str
                 let $recentDiv = $("#recents");
                 let $P = $('<p>').text('Most Recent: ' + mostRecent);
                 $recentDiv.append($P);
@@ -308,7 +306,8 @@ $(document).ready(function () {
                 name: artistInput
             });
             //references 'all-Artists' then orders by key, and limits to the last 2 objects in group
-            let keyQuery = firebase.database().ref('all-Artists').limitToLast(2); 
+            //unfinished feature
+            /*let keyQuery = firebase.database().ref('all-Artists').limitToLast(2); 
             keyQuery.once("value")
                 .then((snapshot) => {
                     let snapShot = snapshot.val();
@@ -320,11 +319,11 @@ $(document).ready(function () {
                     //  let lowestKey = previousSnap.getChildren().val();
                      // //console.log(lowestKey);
                    
-                })    
-        
-            bandDB.ref('all-Artists').push(artistInfo); 
+                }) */
+
+            bandDB.ref('all-Artists').push(artistInfo);
         })
-        
+
     }
 
     // Called when album is clicked
@@ -336,7 +335,7 @@ $(document).ready(function () {
         // let albumName = $thisAlbum.attr("data-album-name");
 
         //Stops from loading one too many songs
-        let albumLength = ($thisAlbum.attr("data-album-length") - 1) ;
+        let albumLength = ($thisAlbum.attr("data-album-length") - 1);
         let forAlbumIndex = $thisAlbum.attr("data-index");
         let albumID = $thisAlbum.attr("data-album-id");
 
@@ -345,7 +344,7 @@ $(document).ready(function () {
 
         // Query for Song search, limits to album length
         //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
-        
+
         // Old queryURL
         // let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
         let songQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?id=${albumID}&entity=song&limit=${albumLength}`;
@@ -392,7 +391,7 @@ $(document).ready(function () {
 
     // Called when song is clicked
     function lyricsAJAX() {
-        
+
         // Shorthand
         let $thisSong = $(this);
         console.log($thisSong.attr("data-artist-name"));
@@ -414,27 +413,29 @@ $(document).ready(function () {
             console.log(lyricsResponse);
             $lyricsPar.text(lyricsResponse.lyrics)
             $lyricsModal.modal("open");
-            youtubeVideo(songArtistName, songName);            
-        });   
+            youtubeVideo(songArtistName, songName);
+        });
     };
 
+    //sanitizes string for the wiki documentation
     const sanitizeString = (str) => {
         console.log(str);
-        str = str.replace(/[^a-z0-9 \(\)\_-]/gim,"");
+        str = str.replace(/[^a-z0-9 \(\)\_-]/gim, "");
         console.log(str);
         return str.trim();
     };
 
+    //ensures each word will be of upper case due  wiki api's wackness.
     const wikiParseURL = (str) => {
         str = toTitleCase(str);
         //console.log(str);
-        str = str.replace(/[" "]/gim,"%20");
+        str = str.replace(/[" "]/gim, "%20");
         //console.log(str);
         return str.trim();
     };
 
     const toTitleCase = (str) => {
-        return str.replace(/\w\S*/g, function(txt){
+        return str.replace(/\w\S*/g, function (txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
     };
@@ -442,22 +443,29 @@ $(document).ready(function () {
     const animateIn = () => {
         $(".title").addClass("min");
 
-        $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
-        $(".band-name").addClass("fadeInRightBig").removeClass("hide");
-        fitty(".band-name",{maxSize: 325});
+        $(".band-image").addClass("fadeInLeftBig")
+            .removeClass("hide");
+        $(".band-name").addClass("fadeInRightBig")
+            .removeClass("hide");
+        fitty(".band-name", {
+            maxSize: 325
+        });
 
         setTimeout(function () {
-            $(".bio").addClass("fadeInRightBig").removeClass("hide");
+            $(".bio").addClass("fadeInRightBig")
+                .removeClass("hide");
             setTimeout(function () {
-                $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+                $(".collapsible").addClass("fadeInUpBig")
+                    .removeClass("hide");
                 setTimeout(function () {
-                    $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
+                    $(".footer-copyright").addClass("fadeInUpBig")
+                        .removeClass("hide");
                 }, 250);
             }, 250);
         }, 250);
     };
 
-    $('#band-name').keypress(function(event) {
+    $('#search-term').keypress(function (event) {
         if (event.keyCode == 13 || event.which == 13) {
             getArtistAMGID();
             mediaWikiSummaryAJAX();
@@ -479,15 +487,17 @@ $(document).ready(function () {
         $(".collapsible").empty();
     });
 
-    $('#band-name').each(function () {
+    $('#search-term').each(function () {
         const elem = $(this);
         // Look for changes in the value
         elem.bind("changes input paste", function (event) {
             // If value has changed...
             if (elem.val() != "") {
-                $(".c-btn").removeClass("disabled").addClass("hvr-icon-grow");
+                $(".c-btn").removeClass("disabled")
+                    .addClass("hvr-icon-grow");
             } else {
-                $(".c-btn").addClass("disabled").removeClass("hvr-icon-grow");
+                $(".c-btn").addClass("disabled")
+                    .removeClass("hvr-icon-grow");
             };
         });
     });
@@ -496,84 +506,94 @@ $(document).ready(function () {
     $(".album-list").on("click", ".song", lyricsAJAX);
 
     //=============================================================
-    function youtubeVideo(songArtistName, songName) {         
-        let APIKey = "AIzaSyCi8-fme3jt8JWOwsFM6LVR2EnO6R7m2fY";                
-        let QueryURL = 'https://www.googleapis.com/youtube/v3/search';        
-        var songVideo = '';         
-        $.ajax({             
-            cache: false,             
-            data: $.extend({                 
+    function youtubeVideo(songArtistName, songName) {
+        let APIKey = "AIzaSyCi8-fme3jt8JWOwsFM6LVR2EnO6R7m2fY";
+        let QueryURL = 'https://www.googleapis.com/youtube/v3/search';
+        var songVideo = ''; //Empty to pass in song name.
+        $.ajax({
+            cache: false,
+            data: $.extend({
                 key: APIKey,
-                q: `${songArtistName} ${songName}`,             
-                }, 
-                {                 
-                    maxResults: 1,                 
-                    type: 'video',                 
-                    videoEmbeddable: 'true',                 
-                    part: 'snippet'             
-                    }),             
-                dataType: 'json',             
-                type: 'GET',             
-                timeout: 5000,             
-                url: QueryURL         
-                }).then(function (videoData) {             
-                    console.log('YOUTUBE');             
-                    console.log(videoData);             
-                    let videoObj = videoData.items[0].id.videoId;
-                    // const etag = removeWrappedQuotes(videoObj);           
-                    songVideo = `<iframe width="550" height="350" src="https://www.youtube.com/embed/${videoObj}">`;             
-                    console.log('MADE IT BROV');             
-                    console.log(songVideo);
-                    const $iframe = $(songVideo);        
-                    $(".youtube-content").append($iframe);        
-                });         
-                //return songVideo;     
-            };
+                q: `${songArtistName} ${songName}`, //songArtist / name value from Other API call
+            }, {
+                maxResults: 1,
+                type: 'video',
+                category: 'music',
+                videoEmbeddable: 'true',
+                part: 'snippet',
+                order: 'viewcount', //Gets most viewed
+            }),
+            dataType: 'json',
+            type: 'GET',
+            timeout: 3500,
+            url: QueryURL
+        }).then(function (videoData) {
+            console.log('ITSS PEWWWDIEEPIE');
+            console.log(videoData);
+            let videoObj = videoData.items[0].id.videoId;
+            // const etag = removeWrappedQuotes(videoObj);           
+            songVideo = `<iframe width="782" height="350" src="https://www.youtube.com/embed/${videoObj}">`;
+            console.log('MADE IT Logangers');
+            console.log(songVideo);
+            const $iFrame = $(songVideo);
+
+            $(".youtube-content").append($iFrame);
+
+            //adding listener for player ready to enable pause
+            player.addEvent('ready', () => {
+                player.addEvent('pause');
+            });
+            //currently not working
+            $('.closeLyricsButton').bind('click', () => {
+                player.api('pause');
+            });
+        });
+    };
 
     $(".collapsible").collapsible();
     $(".modal").modal()
-    $(".read-more").on("click", function(){
+    $(".read-more").on("click", function () {
         let totalHeight = 0
 
         let $button = $(this);
         console.log($button);
         let $up = $button.parent();
         let $ps = $up.find("p:not('.read-more')");
-        
-        if ($(this).attr("data-state") === "open"){
+
+        if ($(this).attr("data-state") === "open") {
             // measure how tall inside should be by adding together heights of all inside paragraphs (except read-more paragraph)
-            $ps.each(function() {
+            $ps.each(function () {
                 totalHeight += $(this).outerHeight();
                 totalHeight += 25;
             });
-                    
+
             $up
                 .css({
-                // Set height to prevent instant jumpdown when max height is removed
-                "height": $up.height(),
-                "max-height": 9999
+                    // Set height to prevent instant jumpdown when max height is removed
+                    "height": $up.height(),
+                    "max-height": 9999
                 })
                 .animate({
-                "height": totalHeight += 48,
+                    "height": totalHeight += 48,
                 });
-            
+
             // fade out read-more
             $(".read-more a").text("Close");
-            $button.attr("data-state","close");
-            
+            $button.attr("data-state", "close");
+
             // prevent jump-down
             return false;
-        }else if ($(this).attr("data-state") === "close"){
-            
+        } else if ($(this).attr("data-state") === "close") {
+
             $up
                 .animate({
-                "height": 240,
+                    "height": 240,
                 });
 
             $(".read-more a").text("Read More");
             $button.attr("data-state", "open")
 
             return false;
-        };  
+        };
     });
-}); 
+});

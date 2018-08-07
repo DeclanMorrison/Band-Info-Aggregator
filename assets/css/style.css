@@ -17,6 +17,8 @@ body {
 
 .lyricsPar {
     text-align: center;
+    font-size: 28px;
+    line-height: 48px;
 }
 
 .card-title {
@@ -32,13 +34,14 @@ body {
 }
 
 .closeLyricsButton {
-    background-color: #00b0ff;
+    background-color: #66B6AB;
     color: #F5F5F5;
     border-width: 0px;
 }
 
 .line-break {
     white-space: pre-wrap;
+    justify-content: space-around;
 }
 
 .search-bar{
@@ -200,4 +203,15 @@ here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-sti
 ::-webkit-scrollbar {
     width: 0px;  /* remove scrollbar space */
     background: transparent;  /* optional: just make scrollbar invisible */
+}
+
+.youtube-content {
+    justify-content: space-evenly;
+    border: 3px solid #ffffff;
+}
+
+
+
+.modal-footer {
+    margin-top: 30px;
 }

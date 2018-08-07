@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700|Roboto+Slab:100,400,700|Roboto:100,400,900|Fjalla+One');
 
-
 /* Colors
  - White: #F5F5F5, grey lighten-4
  - Black: #212121, grey darken-4
@@ -193,7 +192,6 @@ body {
     font-weight: 700;
     font-size: 30px;
 }
-
 /* These pieces of code hide the scrollbar, taken from Stack Overflow, 
 here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll */
 

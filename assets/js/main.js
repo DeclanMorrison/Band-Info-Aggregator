@@ -5,6 +5,17 @@ $(document).ready(function () {
 
     //=============================================================
 
+    //              Temporary Things
+
+    //=============================================================
+
+
+
+
+
+
+    //=============================================================
+
     //              FireBase
 
     //=============================================================
@@ -16,49 +27,41 @@ $(document).ready(function () {
         storageBucket: "band-aggregator.appspot.com",
         messagingSenderId: "432642484449"
     };
+
     firebase.initializeApp(config);
+
     let bandDB = firebase.database();
 
-
-    $('#top').hide();
-    //loops through entirity of database checks records
+    //--------------------------------------------------------------
+    
+    //loops through entirity of database/searches, checks records, called whenever the database is updated (on search);
     bandDB.ref('searches/').orderByChild('searchCount')
-        .limitToLast(5).on('value',  (snapshot) => { //limits the amound appended to 5. 
-            let topFive = '<ul>'
-            snapshot.forEach((childSnapshot) => {
-                //console.log(childSnapshot.val());
-                let childRecord = childSnapshot.val(); //sets variable of childSnapshot
-                topFive += '<li>' + childRecord.artist + ' Searches = ' +
-                    childRecord.searchCount + '</li>'
-            });
-            topFive += '</ul>';
-            $('#top').html(topFive);
+    //limits the amound appended to 5.
+    .limitToLast(5).on('value',  (snapshot) => {
+        // Reference to the HTML
+        const $statsTableBody = $(".statsTableBody");
+
+        // Empties the table body
+        $statsTableBody.empty();
+
+        // Loops over each searched item
+        snapshot.forEach((childSnapshot) => {
+            // Creates elements to interact with
+            const $statsTableRow = $("<tr>");
+            const $statsTableName = $("<td>");
+            const $statsTableSearches = $("<td>");
+
+            // Shorthand for navigating snapshot
+            let childRecord = childSnapshot.val();
+
+            // Writes the list
+            $statsTableName.text(childRecord.artist);
+            $statsTableSearches.text(childRecord.searchCount);
+            $statsTableRow.append($statsTableName, $statsTableSearches)
+            $statsTableBody.prepend($statsTableRow);
         });
+    });
 
-    $('#search-btn').on('click', () => {
-        event.preventDefault();
-        $('#top').show();
-        let searchTerm = $('#band-name').val().toLowerCase().trim();
-        var searchCount = 0;
-
-        bandDB.ref('searches/' + searchTerm).on('value',  (snapshot) => {
-            searchCount = (snapshot.val() && snapshot.val().searchCount) || 0;
-            ////console.log('snap' + snapshot);
-        });
-
-        searchCount = searchCount + 1;
-
-        bandDB.ref('searches/' + searchTerm).set({
-            searchCount: searchCount,
-            artist: searchTerm
-        }, (error)=> {
-            if (error) {
-                //console.log(error);
-            } else {
-                //console.log('data saved madude');
-            }
-        });
-    })
         //to show what the current snapshot is
     let searchRef = firebase.database().ref('searches/');
     searchRef.on('value', (snapshot) => {
@@ -71,12 +74,46 @@ $(document).ready(function () {
     //              Functions
 
     //=============================================================
+
+    // Called when search button is clicked
+    function updateSearchStats() {
+        // Stops the page from refreshing on form input
+        event.preventDefault();
+
+        // Grabs the search term from the user
+        let searchTerm = $('#band-name').val().toLowerCase().trim();
+
+        // Variable for the amounts of searches
+        var searchCount = 0;
+
+        // Sets the search count to the value in the database
+        bandDB.ref('searches/' + searchTerm).on('value',  (snapshot) => {
+            searchCount = (snapshot.val().searchCount) || 0;
+        });        
+
+        // Increases the search count by one
+        searchCount = searchCount + 1;
+
+        // Sets the values in the database 
+        bandDB.ref('searches/' + searchTerm).set({
+            searchCount: searchCount,
+            artist: searchTerm
+        }, (error)=> {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("stats saved to database");
+            }
+        });
+    }
+
+    // Called on search for artist, or called from within if bad search with better search passed    
     const mediaWikiSummaryAJAX = (page) => {
-        console.log(page);
+        //console.log(page);
         if (page === undefined){
             let artistInput = $("#band-name").val().trim();
             let cleanedInput = wikiParseURL(artistInput);
-            console.log(cleanedInput);
+            //console.log(cleanedInput);
 
             let albumQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${cleanedInput}`
             
@@ -86,7 +123,7 @@ $(document).ready(function () {
                 method: "GET",
                 datatype: "json",
             }).then(function (wikiResponse) {
-                console.log(wikiResponse);
+                //console.log(wikiResponse);
                 const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
                 const extract = (Object.values(wikiResponse.query.pages)[0]).extract;
 
@@ -117,7 +154,7 @@ $(document).ready(function () {
                 method: "GET",
                 datatype: "json",
             }).then(function (wikiResponse) {
-                console.log(wikiResponse);
+                //console.log(wikiResponse);
                 $(".band-name").text((Object.values(wikiResponse.query.pages)[0]).title);
 
                 const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
@@ -147,7 +184,7 @@ $(document).ready(function () {
             method: "GET",
             datatype: "json",
         }).then(function (wikiResponse) {
-            console.log(wikiResponse);
+            //console.log(wikiResponse);
             if ((Object.values(wikiResponse.query.pages)[0]).original !== undefined){
                 $(".artist-image").attr("src", (Object.values(wikiResponse.query.pages)[0]).original.source);
             }else{
@@ -190,8 +227,6 @@ $(document).ready(function () {
 
     // When an artists is searched
     function itunesAlbumAJAX(artistID) {
-        // Prevents the page from refreshing on submit
-
         // Holding variables for an Index and an array used to prevent duplicate albums
         let albumOnIndex = 0;
         let albumArray = [];
@@ -205,7 +240,7 @@ $(document).ready(function () {
         // Query URL for album search, artistInput only var interaction
         //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
         // let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=5&entity=album&term=${artistInput}`
-        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=5`
+        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=15`
         //console.log(albumQueryURL);
         // Call for getting the album info
         $.ajax({
@@ -219,7 +254,7 @@ $(document).ready(function () {
 
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
-            //console.log(albumResults)
+            console.log(albumResults)
 
             //Removes album metadata, first index of array
             albumResults.shift();
@@ -232,8 +267,7 @@ $(document).ready(function () {
                 // If the track count is bigger than one (prevents singles on first scan),
                 // the album isnt in the holding array (prevents duplicates),
                 // and the albumOnIndex is less than 5 (stops search at 5 results)  && albumOnIndex < 5
-                if (value.trackCount !== 1 &&
-                    $.inArray(value.collectionCensoredName, albumArray) === -1) {
+                if (value.trackCount !== 1 && $.inArray(value.collectionCensoredName, albumArray) === -1 && albumOnIndex < 5) {
                     // Pushes the album name to a holding array
                     albumArray.push(value.collectionCensoredName);
 
@@ -252,7 +286,7 @@ $(document).ready(function () {
             })
 
             // If weve added less than 5 albums (no need to re-scan if we already have 5)            
-            if (albumOnIndex < 5) {
+            if (albumOnIndex < 5 && $.inArray(value.collectionCensoredName, albumArray)) {
                 // Loops over the result
                 $.each(albumResults, function (index, value) {
                     // If the album isnt in the holding array (prevents duplicates),
@@ -402,7 +436,7 @@ $(document).ready(function () {
         }).then(function (lyricsResponse) {
             //console.log(lyricsResponse);
             $lyricsPar.text(lyricsResponse.lyrics)
-            console.log(lyricsResponse.lyrics);
+            //console.log(lyricsResponse.lyrics);
             $lyricsModal.modal("open");
         });   
     };
@@ -477,6 +511,8 @@ $(document).ready(function () {
 
     //=============================================================
 
+    $('#search-btn').on('click', updateSearchStats);
+
     $("#search-btn").on("click", function () {
         getArtistAMGID();
         mediaWikiSummaryAJAX();
@@ -506,7 +542,7 @@ $(document).ready(function () {
         let totalHeight = 0
 
         let $button = $(this);
-        console.log($button);
+        //console.log($button);
         let $up = $button.parent();
         let $ps = $up.find("p:not('.read-more')");
         

@@ -131,7 +131,7 @@ $(document).ready(function () {
                 $(`.bio p:not(".read-more")`).remove();
                 
                 $(".bio").prepend($extract);
-                $(".bio p:first").remove();
+                // $(".bio p:first").remove();
                 $("<br>").insertAfter(".bio p");
             });
         };
@@ -237,14 +237,18 @@ $(document).ready(function () {
                     // Pushes the album name to a holding array
                     albumArray.push(value.collectionCensoredName);
 
-                    // Changes the text of the album div we are on to the name
-                    $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName).addClass("album-name truncate");
+                    const $newAlbum = $(`
+                    <li class="album-list collection-item">
+                        <div class="collapsible-header album${albumOnIndex}Div valign-wrapper" data-album-name="${value.collectionCensoredName}" data-album-length="${value.trackCount}" data-index="${albumOnIndex}" data-album-id="${value.collectionId}">
+                            <img class="album${albumOnIndex}Img" src="${value.artworkUrl100}">
+                            <p class="album${albumOnIndex}Name album-name truncate">${value.collectionCensoredName}</p>
+                        </div>
+                        <div class="collapsible-body song${albumOnIndex}Div">
 
-                    // Adds attributes for[album-name, album-length, album-index],
-                    $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-index", albumOnIndex).attr("data-album-id", value.collectionId).addClass("valign-wrapper");
+                        </div>
+                    </li>`);
 
-                    // Changes the src of the img to reflect the album name
-                    $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
+                    $(".collapsible").append($newAlbum);
 
                     // Increments albumOnIndex to keep track of how many have been added
                     albumOnIndex++;
@@ -261,15 +265,18 @@ $(document).ready(function () {
                         // Pushes the album name to a holding array
                         albumArray.push(value.collectionCensoredName);
 
-                        // Changes the text to the censored name
-                        $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
+                        const $newAlbum = $(`
+                        <li class="album-list">
+                            <div class="collapsible-header album${albumOnIndex}Div valign-wrapper" data-album-name="${value.collectionCensoredName}" data-album-length="${value.trackCount}" data-index="${albumOnIndex}" data-album-id="${value.collectionId}">
+                                <img class="album${albumOnIndex}Img" src="${value.artworkUrl100}">
+                                <p class="album${albumOnIndex}Name album-name truncate">${value.collectionCensoredName}</p>
+                            </div>
+                            <div class="collapsible-body song${albumOnIndex}Div">
 
-                        // Adds attributes for[album-name, album-length, album-index]
-                        $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName)
-                            .attr("data-album-length", value.trackCount).attr("data-index", albumOnIndex);
+                            </div>
+                        </li>`);
 
-                        // Changes the src of the img to reflect the album name    
-                        $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
+                        $(".collapsible").append($newAlbum);
 
                         // Increments albumOnIndex to keep track of how many have been added    
                         albumOnIndex++;
@@ -322,6 +329,7 @@ $(document).ready(function () {
 
     // Called when album is clicked
     function itunesSongAJAX() {
+        console.log("Song Get");
         // Shorthand
         let $thisAlbum = $(this);
         //Old way of searching for songs on an album
@@ -340,7 +348,7 @@ $(document).ready(function () {
         
         // Old queryURL
         // let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
-        let songQueryURL = `https://itunes.apple.com/lookup?id=${albumID}&entity=song&limit=${albumLength}`;
+        let songQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?id=${albumID}&entity=song&limit=${albumLength}`;
 
         // Call for getting the song info
         $.ajax({
@@ -366,7 +374,7 @@ $(document).ready(function () {
             $.each(songResults, function (index, value) {
                 // Adds content to manipulate for the collection
                 const $songCollectionItem = $("<li>");
-                $songCollectionItem.addClass("collection-item");
+                $songCollectionItem.addClass("collection-item song");
 
                 // Changes the Text to the song name
                 $songCollectionItem.text(value.trackCensoredName)
@@ -384,14 +392,17 @@ $(document).ready(function () {
 
     // Called when song is clicked
     function lyricsAJAX() {
-        //console.log("here");
+        
         // Shorthand
         let $thisSong = $(this);
+        console.log($thisSong.attr("data-artist-name"));
         let songArtistName = sanitizeString($thisSong.attr("data-artist-name"));
         let songName = sanitizeString($thisSong.attr("data-song-name"));
         const $lyricsModal = $("#lyricsModal");
         const $lyricsPar = $(".lyricsPar");
+        const $youtubeContent = $(".youtube-content");
 
+        $youtubeContent.empty();
         $lyricsPar.empty();
 
         let queryURL2 = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
@@ -400,19 +411,19 @@ $(document).ready(function () {
             url: queryURL2,
             method: "GET"
         }).then(function (lyricsResponse) {
-            //console.log(lyricsResponse);
+            console.log(lyricsResponse);
             $lyricsPar.text(lyricsResponse.lyrics)
-            console.log(lyricsResponse.lyrics);
             $lyricsModal.modal("open");
+            youtubeVideo(songArtistName, songName);            
         });   
     };
 
     const sanitizeString = (str) => {
-        //console.log(str);
-        str = str.replace(/[^a-z0-9 \_-]/gim,"");
-        //console.log(str);
+        console.log(str);
+        str = str.replace(/[^a-z0-9 \(\)\_-]/gim,"");
+        console.log(str);
         return str.trim();
-    }
+    };
 
     const wikiParseURL = (str) => {
         str = toTitleCase(str);
@@ -420,38 +431,13 @@ $(document).ready(function () {
         str = str.replace(/[" "]/gim,"%20");
         //console.log(str);
         return str.trim();
-    }
+    };
 
     const toTitleCase = (str) => {
         return str.replace(/\w\S*/g, function(txt){
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
-    }
-
-    $('#search-btn').on("keyup keypress", function (event) {
-        let keyCode = event.keyCode || event.which;
-        if (keyCode === 13) {
-            itunesAlbumAJAX();
-            // wikiAJAXcall();
-            event.preventDefault();
-
-            $(".title").addClass("min");
-
-            $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
-
-            setTimeout(function () {
-                $(".bio").addClass("fadeInRightBig").removeClass("hide");
-                setTimeout(function () {
-                    $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
-                    setTimeout(function () {
-                        $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
-                    }, 250)
-                }, 250)
-            }, 250)
-
-            return false;
-        }
-    });
+    };
 
     const animateIn = () => {
         $(".title").addClass("min");
@@ -471,6 +457,15 @@ $(document).ready(function () {
         }, 250);
     };
 
+    $('#band-name').keypress(function(event) {
+        if (event.keyCode == 13 || event.which == 13) {
+            getArtistAMGID();
+            mediaWikiSummaryAJAX();
+            $(".c-btn").addClass("disabled");
+            $(".collapsible").empty();
+        };
+    });
+
     //=============================================================
 
     //              On Clicks
@@ -480,6 +475,8 @@ $(document).ready(function () {
     $("#search-btn").on("click", function () {
         getArtistAMGID();
         mediaWikiSummaryAJAX();
+        $(".c-btn").addClass("disabled");
+        $(".collapsible").empty();
     });
 
     $('#band-name').each(function () {
@@ -495,10 +492,43 @@ $(document).ready(function () {
         });
     });
 
-    $(".collapsible-header").on("click", itunesSongAJAX);
-    $(".album-list").on("click", ".collection-item", lyricsAJAX)
+    $(document.body).on("click", ".collapsible-header", itunesSongAJAX);
+    $(".album-list").on("click", ".song", lyricsAJAX);
 
     //=============================================================
+    function youtubeVideo(songArtistName, songName) {         
+        let APIKey = "AIzaSyCi8-fme3jt8JWOwsFM6LVR2EnO6R7m2fY";                
+        let QueryURL = 'https://www.googleapis.com/youtube/v3/search';        
+        var songVideo = '';         
+        $.ajax({             
+            cache: false,             
+            data: $.extend({                 
+                key: APIKey,
+                q: `${songArtistName} ${songName}`,             
+                }, 
+                {                 
+                    maxResults: 1,                 
+                    type: 'video',                 
+                    videoEmbeddable: 'true',                 
+                    part: 'snippet'             
+                    }),             
+                dataType: 'json',             
+                type: 'GET',             
+                timeout: 5000,             
+                url: QueryURL         
+                }).then(function (videoData) {             
+                    console.log('YOUTUBE');             
+                    console.log(videoData);             
+                    let videoObj = videoData.items[0].id.videoId;
+                    // const etag = removeWrappedQuotes(videoObj);           
+                    songVideo = `<iframe width="550" height="350" src="https://www.youtube.com/embed/${videoObj}">`;             
+                    console.log('MADE IT BROV');             
+                    console.log(songVideo);
+                    const $iframe = $(songVideo);        
+                    $(".youtube-content").append($iframe);        
+                });         
+                //return songVideo;     
+            };
 
     $(".collapsible").collapsible();
     $(".modal").modal()

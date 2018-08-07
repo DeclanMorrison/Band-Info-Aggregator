@@ -128,9 +128,9 @@ body {
 }
 
 .footer-copyright{
-    position: fixed;
-    bottom: 2%;
+    position: relative;
     left: 50%;
+    bottom: 0;
     margin-left: -55.69px;
 }
 

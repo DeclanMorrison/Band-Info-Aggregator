@@ -11,7 +11,7 @@ $(document).ready(function () {
     var config = {
         apiKey: "AIzaSyCCuhVM3rHwb0Qq8qrPlFWdCaQCEg0QYm0",
         authDomain: "band-aggregator.firebaseapp.com",
-        databaseURL: "http://band-aggregator.firebaseio.com",
+        databaseURL: "https://band-aggregator.firebaseio.com",
         projectId: "band-aggregator",
         storageBucket: "band-aggregator.appspot.com",
         messagingSenderId: "432642484449"
@@ -78,7 +78,7 @@ $(document).ready(function () {
             let cleanedInput = wikiParseURL(artistInput);
             console.log(cleanedInput);
 
-            let albumQueryURL = `http://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${cleanedInput}`
+            let albumQueryURL = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${cleanedInput}`
             
             // Call for getting the band wiki info
             $.ajax({
@@ -109,7 +109,7 @@ $(document).ready(function () {
             });
         }else if (page !== undefined){
             
-            let albumQueryURL = `http://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${page}`
+            let albumQueryURL = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${page}`
 
             $.ajax({
                 url: albumQueryURL,
@@ -138,7 +138,7 @@ $(document).ready(function () {
 
     const mediaWikiimageAJAX = (pageID) => {
 
-        let albumQueryURL = `http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pageids=${pageID}`
+        let albumQueryURL = `https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pageids=${pageID}`
 
         // Call for getting the band wiki picture
         $.ajax({
@@ -165,8 +165,8 @@ $(document).ready(function () {
         let artistInput = $("#band-name").val().trim();
 
         // Query URL for album search, artistInput only var interaction
-        //`http://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
-        let albumQueryURL = `http://itunes.apple.com/search?media=music&limit=1&entity=album&term=${artistInput}`
+        //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
+        let albumQueryURL = `https://itunes.apple.com/search?media=music&limit=1&entity=album&term=${artistInput}`
 
         // Call for getting the album info
         $.ajax({
@@ -202,9 +202,9 @@ $(document).ready(function () {
         let artistInput = $("#band-name").val().trim();
 
         // Query URL for album search, artistInput only var interaction
-        //`http://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
-        // let albumQueryURL = `http://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=5&entity=album&term=${artistInput}`
-        let albumQueryURL = `http://itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=5`
+        //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
+        // let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/search?media=music&limit=5&entity=album&term=${artistInput}`
+        let albumQueryURL = `https://itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=5`
         //console.log(albumQueryURL);
         // Call for getting the album info
         $.ajax({
@@ -343,11 +343,11 @@ $(document).ready(function () {
         $(".song" + forAlbumIndex + "Div").empty();
 
         // Query for Song search, limits to album length
-        //`http://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
+        //`https://cors-anywhere.herokuapp.com/ -> add to front of queryURL to get running on live
         
         // Old queryURL
-        // let songQueryURL = `http://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
-        let songQueryURL = `http://itunes.apple.com/lookup?id=${albumID}&entity=song&limit=${albumLength}`;
+        // let songQueryURL = `https://itunes.apple.com/search?media=music&entity=song&term=${albumName}&limit=${albumLength}`;
+        let songQueryURL = `https://itunes.apple.com/lookup?id=${albumID}&entity=song&limit=${albumLength}`;
 
         // Call for getting the song info
         $.ajax({
@@ -404,7 +404,7 @@ $(document).ready(function () {
         $youtubeContent.empty();
         $lyricsPar.empty();
 
-        let queryURL2 = `http://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
+        let queryURL2 = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
 
         $.ajax({
             url: queryURL2,
@@ -497,7 +497,7 @@ $(document).ready(function () {
     //=============================================================
     function youtubeVideo(songArtistName, songName) {         
         let APIKey = "AIzaSyCi8-fme3jt8JWOwsFM6LVR2EnO6R7m2fY";                
-        let QueryURL = 'http://www.googleapis.com/youtube/v3/search';        
+        let QueryURL = 'https://www.googleapis.com/youtube/v3/search';        
         var songVideo = '';         
         $.ajax({             
             cache: false,             
@@ -520,7 +520,7 @@ $(document).ready(function () {
                     console.log(videoData);             
                     let videoObj = videoData.items[0].id.videoId;
                     // const etag = removeWrappedQuotes(videoObj);           
-                    songVideo = `<iframe width="550" height="350" src="http://www.youtube.com/embed/${videoObj}">`;             
+                    songVideo = `<iframe width="550" height="350" src="https://www.youtube.com/embed/${videoObj}">`;             
                     console.log('MADE IT BROV');             
                     console.log(songVideo);
                     const $iframe = $(songVideo);        

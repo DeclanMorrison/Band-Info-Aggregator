@@ -62,11 +62,10 @@ $(document).ready(function () {
         });
     });
 
-        //to show what the current snapshot is
-    let searchRef = firebase.database().ref('searches/');
-    searchRef.on('value', (snapshot) => {
-        //console.log(snapshot);
-    });
+    // Shows current website
+    // firebase.database().ref('searches/').on('value', (snapshot) => {
+    //     console.log(snapshot);
+    // });
 
 
     //=============================================================
@@ -88,8 +87,9 @@ $(document).ready(function () {
 
         // Sets the search count to the value in the database
         bandDB.ref('searches/' + searchTerm).on('value',  (snapshot) => {
-            searchCount = (snapshot.val().searchCount) || 0;
-        });        
+            searchCount = (snapshot.val() && snapshot.val().searchCount) || 0;
+        });
+        
 
         // Increases the search count by one
         searchCount = searchCount + 1;
@@ -106,8 +106,7 @@ $(document).ready(function () {
             }
         });
     }
-
-    // Called on search for artist, or called from within if bad search with better search passed    
+    
     const mediaWikiSummaryAJAX = (page) => {
         //console.log(page);
         if (page === undefined){

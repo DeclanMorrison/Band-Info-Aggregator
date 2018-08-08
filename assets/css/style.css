@@ -292,3 +292,9 @@ here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-sti
     font-weight: bolder;
     font-size: 35px;
 }
+#statsModal{
+    border-style: solid;
+    border-width: 5px;
+    border-color: #ff5252; 
+
+}

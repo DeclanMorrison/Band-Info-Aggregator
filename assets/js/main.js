@@ -82,6 +82,7 @@ $(document).ready(function () {
 
         // Changes text to recent search (Shared by all users)
         $recentSearchesPar.text("Most recent search: " + mostRecent);
+        $(".statsRecentSearches").css({"font-weight":"bolder","text-align":"center","margin-top":"10px","font-size":"20px"});
     });
 
     // Shows current snapshot

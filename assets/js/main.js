@@ -642,8 +642,8 @@ $(document).ready(function () {
         updateSearchStats();
         getArtistAMGID();
         mediaWikiSummaryAJAX();
-        $(".album-list").empty();
-        $("#search-term").empty();
+        $("#search-btn").addClass("disabled");
+        $(".collapsible").empty();
     } 
 
     //=============================================================

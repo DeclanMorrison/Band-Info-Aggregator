@@ -680,6 +680,7 @@ $(document).ready(function () {
                 // Displays an error if the call doesn't work
                 $lyricsPar.text("sorry, we couldn't find lyrics for that song");
                 $lyricsModal.modal("open");
+                youtubeVideo(songArtistName, songName);
             }
         }).then(function (lyricsResponse) {
 

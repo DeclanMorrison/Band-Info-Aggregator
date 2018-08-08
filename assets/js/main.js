@@ -536,6 +536,7 @@ $(document).ready(function () {
                             </li>`);
 
                             $(".collapsible").append($newAlbum);
+                            $newAlbum.addClass("hvr-grow-shadow").addClass("col s12");
                             itunesSongAJAX(`album${albumOnIndex}Div`);
                             
 

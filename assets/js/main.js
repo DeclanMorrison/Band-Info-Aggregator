@@ -56,7 +56,8 @@ $(document).ready(function () {
             const $statsTableRow = $("<tr>");
             const $statsTableName = $("<td>");
             const $statsTableSearches = $("<td>");
-
+            // add's style to top search model
+            $(".statsTableBody").css({"font-weight":"bold", "font-size":"20px","font-family":"Noto Serif"});
             // Shorthand for navigating snapshot
             let childRecord = childSnapshot.val();
 
@@ -81,6 +82,7 @@ $(document).ready(function () {
 
         // Changes text to recent search (Shared by all users)
         $recentSearchesPar.text("Most recent search: " + mostRecent);
+        $(".statsRecentSearches").css({"font-weight":"bolder","text-align":"center","margin-top":"10px","font-size":"20px"});
     });
 
     // Shows current snapshot

@@ -280,3 +280,21 @@ here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-sti
     width: 0px;  /* remove scrollbar space */
     background: transparent;  /* optional: just make scrollbar invisible */
 }
+
+.artistName{
+    font-family: Oleo Script;
+    font-weight: bolder;
+    font-size: 35px;
+}
+
+.totalSearches{
+    font-family: Oleo Script;
+    font-weight: bolder;
+    font-size: 35px;
+}
+#statsModal{
+    border-style: solid;
+    border-width: 5px;
+    border-color: #ff5252; 
+
+}

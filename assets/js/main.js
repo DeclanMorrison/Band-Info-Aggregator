@@ -666,7 +666,7 @@ $(document).ready(function () {
         const $lyricsPar = $(".lyricsPar");
 
         //for youtube
-        const $youtubeContent = $(".youtube-content");
+        $(".youtube-content").empty();
 
         // For getting the lyrics
         let lyricsQueryURL = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
@@ -681,6 +681,7 @@ $(document).ready(function () {
                 $lyricsModal.modal("open");
             }
         }).then(function (lyricsResponse) {
+
             // Changes the text to the lyrics
             $lyricsPar.text(lyricsResponse.lyrics)
             
@@ -725,14 +726,14 @@ $(document).ready(function () {
             cache: false,
             data: $.extend({
                 key: APIKey,
-                q: `${songArtistName}+${songName}`, //songArtist / name value from Other API call
+                q: `${songName} ${songArtistName}`, //  ${songArtistName} s ongArtist / name value from Other API call
             }, {
                 maxResults: 1,
                 type: 'video',
                 category: 'music',
                 videoEmbeddable: 'true',
                 part: 'snippet',
-                order: 'viewcount', //Gets most viewed
+                //order: 'viewcount', //Gets most viewed
             }),
             dataType: 'json',
             type: 'GET',
@@ -743,13 +744,13 @@ $(document).ready(function () {
             console.log(videoData);
             let videoObj = videoData.items[0].id.videoId;
             // const etag = removeWrappedQuotes(videoObj);           
-            songVideo = `<iframe width="620" height="350" src="https://www.youtube.com/embed/${videoObj}">`;
+            songVideo = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoObj}" class="youtube-iframe">`;
             console.log('MADE IT');
             console.log(songVideo);
             const $iFrame = $(songVideo);
 
             $(".youtube-content").append($iFrame);
-
+            $(".youtube-iframe").attr("height", `${($(".youtube-iframe").width())/(1.777778)}px`);
         });
     };
 
@@ -825,6 +826,14 @@ $(document).ready(function () {
         };  
     });
 
+    $(document.body).on("mouseenter", ".album-list", function () {
+        $(this).css("z-index", 500);
+    });
+
+    $(document.body).on("mouseleave", ".album-list", function () {
+        $(this).css("z-index", 0);
+    });
+
     //=============================================================
 
     //              Instantly Called
@@ -843,6 +852,9 @@ $(document).ready(function () {
                 };
             });
         });
+    });
+    $(window).resize(function(){
+        $(".youtube-iframe").attr("height", `${($(".youtube-iframe").width())/(1.777778)}px`);
     });
 });
 

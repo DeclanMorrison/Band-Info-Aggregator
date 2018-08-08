@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700|Roboto+Slab:100,400,700|Roboto:100,400,900|Fjalla+One');
+
+
+/* Colors
+ - White: #F5F5F5, grey lighten-4
+ - Black: #212121, grey darken-4
+ - Blue: #00b0ff, light-blue accent-3
+ - Red: #ff5252, red accent-2
+ - Yellow: #ffee58, yellow lighten-1
+  */
+
+
+body {
+    background: #F5F5F5;
+    color: #212121
+}
+
+.lyricsPar {
+    text-align: center;
+}
+
+.card-title {
+    text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
+}
+
+.collapsible-body {
+    padding: 0px;
+}
+
+.closeLyricsButton {
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.line-break {
+    white-space: pre-wrap;
+}
+
+.search-bar{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* label focus color */
+.input-field input:focus + label {
+    color: #00b0ff !important;
+}
+
+/* label underline focus color */
+.row .input-field input:focus {
+    box-shadow: 0 1px 0 0 #00b0ff !important
+}
+ 
+.c-btn{
+    position: relative;
+    top: 20px;
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.c-btn:hover{
+    position: relative;
+    top: 20px;
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.c-btn:focus{
+    position: relative;
+    top: 20px;
+
+    background-color: #00b0ff;
+    color: #F5F5F5;
+    border-width: 0px;
+}
+
+.google{
+    position: absolute;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: auto;
+}
+
+.minus{
+    position: absolute;
+    left: 74%;
+    transform: translate(-50%, -50%);
+    width: 4vw;
+    height: 1.25vw;
+    background-color: #888;
+}
+
+.logo{
+    position: absolute;
+    top: 0vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.title{
+    transition: top 1s;
+    width: 100vw;
+    height: 50vh;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.min{
+    transition: top 1s;
+    top: 7%;
+}
+
+.main{
+    margin-top: 75px;
+    z-index: 2;
+}
+
+.footer-copyright{
+    position: fixed;
+    bottom: 2%;
+    left: 50%;
+    margin-left: -55.69px;
+}
+
+.album-name{
+    font-family: 'Roboto Slab', serif;
+    font-weight: 400;
+    font-size: 40px;
+    margin-left: 15px;
+}
+
+.collection-item{
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+.band-name{
+    font-family: 'Fjalla One';
+    margin-left: -15px;
+    margin-top: 30px;
+}
+
+.fit{
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.bio{
+    max-height: 240px;
+    position: relative;
+    overflow: hidden; 
+
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 25px;
+}
+
+.bio .read-more { 
+    background-color: transparent;
+    position: absolute; 
+    bottom: 0px; 
+    left: 0px;
+    width: 100%; 
+    text-align: center; 
+    margin: 0; padding: 30px 0; 
+
+    border-style: none;
+        
+    /* "transparent" only works here because == rgba(0,0,0,0) */
+    background: linear-gradient(rgba(2,0,36,0) 0%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
+}
+
+.read-more-button{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-family: 'Roboto Slab';
+    font-weight: 700;
+    font-size: 30px;
+}
+
+.toast-warning{
+    font-family: 'Roboto Slab';
+    font-weight: 900;
+    background-color: #ff5252;
+    color: #F5F5F5;
+}
+
+/* These pieces of code hide the scrollbar, taken from Stack Overflow, 
+here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll */
+
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}

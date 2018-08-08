@@ -5,10 +5,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Band Info Aggregator</title>
+    <title>Google-</title>
 
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="assets/images/favicon (1).ico">
 
     <!-- CSS IMPORTS -->
 
@@ -31,19 +33,100 @@
 </head>
 
 <body>
+    <div id="lyricsModal" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <p class="line-break lyricsPar"></p>
+        </div>
 
-    <div class="row">
-        <form class="col s12">
-            <div class="row">
-                <div></div>
-                <input type="text" data-length="25" id="searchBox">
-                <label for="searchBox">Search</label>
-            </div>
-            <button class="btn waves-effect waves-light" type="submit" id="searchBtn" name="action">Search
-                <i class="material-icons right">send</i>
-            </button>
-        </form>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat closeLyricsButton">Close</a>
+        </div>
     </div>
+
+    <div id="statsModal" class="modal modal-fixed-footer">
+        <div class="modal-content statsContent">
+            <table class="centered">
+                <thead>
+                    <tr>
+                        <th>Artist Name</th>
+                        <th>Total Searches</th>
+                    </tr>
+                </thead>
+        
+                <tbody class="statsTableBody"></tbody>
+            </table>
+
+            <p class="statsRecentSearches">There haven't been any recent searches</p>
+        </div>
+
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat closeLyricsButton">Close</a>
+        </div>
+    </div>
+
+    <div class="title">
+        <div class="container logo">
+            <img class="google" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2000px-Google_2015_logo.svg.png">
+            <div class="minus"></div>
+        </div>
+
+        <div class="container search-bar">
+            <div class="row">
+                <div class="input-field col s8">
+                    <input id="search-term" type="text" class="roboto" autocomplete="off">
+                    <label class="input" for="search-term">Band Name</label>
+                </div>
+                <div class="col s2">
+                    <button class="btn waves-effect waves-light c-btn z-depth-0 disabled" type="submit" id="search-btn" name="action">Search
+                        <i class="material-icons right hvr-icon">search</i>
+                    </button>
+                </div>
+                <div class="col s2">
+                    <button data-target="statsModal" class="btn waves-effect waves-light c-btn z-depth-0 modal-trigger statsButton">Top Searches</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container main">
+        <div class="row valign-wrapper">
+            <div class="col s4 m4">
+                <div class="card animated band-image hide">
+                    <div class="card-image">
+                        <img class="artist-image" src="https://www.mikrodots.com/wp-content/uploads/2016/07/placeholder.jpg">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s8 m8">
+                <div class="band-name animated fit hide">Example Band Name</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m12">
+                <div class="card-panel bio animated hide">
+                    <p class="read-more" data-state="open">
+                        <a href="#" class="button read-more-button">Read More</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <ul class="collapsible animated hide album-list">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <footer class="footer-copyright animated hide">
+        <p>© 2018 CopyWrong</p>
+    </footer>
+
+
 
 
 
@@ -56,10 +139,15 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-    <!-- Materialize -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <!-- Javascript -->
     <script src="assets/js/main.js"></script>
+    <!-- Materialize -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
+    <!-- Fitty -->
+    <script src="assets/js/fitty.min.js"></script>
+
 </body>
 
 </html>

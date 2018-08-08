@@ -393,6 +393,8 @@ $(document).ready(function () {
 
         $(".collapsible-body").attr("style", "");
         $(".album-list").removeClass("active");
+        
+
 
         // Grabs the value of the search
         let artistInput = $("#search-term").val().trim();
@@ -458,6 +460,7 @@ $(document).ready(function () {
                         </li>`);
 
                         $(".collapsible").append($newAlbum);
+                        $newAlbum.addClass("hvr-grow-shadow").addClass("col s12");
 
                         // Increments albumOnIndex to keep track of how many have been added
                         albumOnIndex++;
@@ -496,6 +499,7 @@ $(document).ready(function () {
                             </li>`);
 
                             $(".collapsible").append($newAlbum);
+                            
 
                             // Increments albumOnIndex to keep track of how many have been added    
                             albumOnIndex++;
@@ -747,6 +751,8 @@ $(document).ready(function () {
         });
     });
 });
+
+
 
 //=============================================================
 

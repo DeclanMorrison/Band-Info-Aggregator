@@ -128,7 +128,7 @@ body {
 }
 
 .footer-copyright{
-    position: fixed;
+    position: relative;
     bottom: 2%;
     left: 50%;
     margin-left: -55.69px;
@@ -167,6 +167,10 @@ body {
     font-weight: 400;
     font-size: 18px;
     line-height: 25px;
+
+    border-style: double;
+    border-width: 4px;
+    border-color: #00b0ff;
 }
 
 .bio .read-more { 
@@ -186,11 +190,14 @@ body {
 
 .read-more-button{
     position: absolute;
-    transform: translate(-50%, -50%);
+    /* transform: translate(-50%, -50%); */
     color: black;
     font-family: 'Roboto Slab';
     font-weight: 700;
     font-size: 30px;
+
+    left: 50%;
+    margin-left: -55.69px;
 }
 
 .toast-warning{

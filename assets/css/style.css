@@ -249,6 +249,10 @@ body {
     font-size: 100%;
 }
 
+.album-list{
+    border-width: 0px;
+}
+
 /* These pieces of code hide the scrollbar, taken from Stack Overflow, 
 here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll */
 

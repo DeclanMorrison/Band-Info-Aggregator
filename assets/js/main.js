@@ -2,7 +2,7 @@ $(document).ready(function () {
     let hasSearched = false;
     setInterval(function(){
         if ($("#search-term").val() === "" && (!($("#search-btn").hasClass("disabled")))){   
-            console.error("Nice try bud, but this button is staying disabled!");       
+            //console.error("Nice try bud, but this button is staying disabled!");       
             $("#search-btn").addClass("disabled");
         };
     },1);
@@ -85,7 +85,7 @@ $(document).ready(function () {
 
     // Shows current snapshot
     // firebase.database().ref('searches/').on('value', (snapshot) => {
-    //     console.log(snapshot);
+    //     //console.log(snapshot);
     // });
 
 
@@ -137,9 +137,9 @@ $(document).ready(function () {
             artist: titleSearchTerm
         }, (error)=> {
             if(error) {
-                console.log(error);
+                //console.log(error);
             }else {
-                console.log("stats saved to database");
+                //console.log("stats saved to database");
             };
         });
     };
@@ -267,7 +267,7 @@ $(document).ready(function () {
                 method: "GET",
                 datatype: "json",
             }).then(function (wikiResponse) {
-                console.log(wikiResponse);
+                //console.log(wikiResponse);
                 // Creates variable for the pageID and the extract
                 const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
                 const extract = (Object.values(wikiResponse.query.pages)[0]).extract;
@@ -276,6 +276,7 @@ $(document).ready(function () {
                 if(extract === "") {
                     // Adds The infront (more likely to find);
                     cleanedInput = "The%20" + cleanedInput;
+                    $(".band-name").text((Object.values(wikiResponse.query.pages)[0]).title);
 
                     // Passes it back through to see if something is found (goes to else);
                     mediaWikiSummaryAJAX(cleanedInput);
@@ -437,7 +438,7 @@ $(document).ready(function () {
         // let albumQueryURL = `https://itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
 
         // For ID search
-        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=15`
+        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album`
 
         // For ID search (offline)
         //let albumQueryURL = `https://itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=15`
@@ -454,8 +455,12 @@ $(document).ready(function () {
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
 
-            //Removes album metadata, first index of array
-            albumResults.shift();
+            //Removes any non-albums that were returned
+            albumResults.forEach(function(value, index){
+                if (value.wrapperType !== "collection"){
+                    albumResults.splice(index, 1);
+                };
+            });
 
             // If there are album results
             if(albumResults !== 0) {
@@ -490,6 +495,7 @@ $(document).ready(function () {
 
                         $(".collapsible").append($newAlbum);
                         $newAlbum.addClass("hvr-grow-shadow").addClass("col s12");
+                        itunesSongAJAX(`album${albumOnIndex}Div`);
 
                         // Increments albumOnIndex to keep track of how many have been added
                         albumOnIndex++;
@@ -528,6 +534,7 @@ $(document).ready(function () {
                             </li>`);
 
                             $(".collapsible").append($newAlbum);
+                            itunesSongAJAX(`album${albumOnIndex}Div`);
                             
 
                             // Increments albumOnIndex to keep track of how many have been added    
@@ -567,9 +574,12 @@ $(document).ready(function () {
     };
 
     // Called when album is clicked
-    function itunesSongAJAX() {
+    function itunesSongAJAX(album) {
         // Shorthand
-        let $thisAlbum = $(this);
+        let $thisAlbum = $(`.${album}`);
+        // let $thisAlbum = $(this);
+        //console.log($thisAlbum);
+        // let $thisAlbum = $(this);
 
         // If the information has not already been loaded
         if($thisAlbum.attr("data-load-state") === "not-loaded") {
@@ -607,7 +617,7 @@ $(document).ready(function () {
 
                 // Shorthand for interacting with JSON
                 let songResults = parsedSongResponse.results;
-                console.log(songResults);
+                //console.log(songResults);
 
                 //Removes first index, which is album meta data
                 songResults.shift();
@@ -655,6 +665,9 @@ $(document).ready(function () {
         const $lyricsModal = $("#lyricsModal");
         const $lyricsPar = $(".lyricsPar");
 
+        //for youtube
+        const $youtubeContent = $(".youtube-content");
+
         // For getting the lyrics
         let lyricsQueryURL = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
 
@@ -673,6 +686,8 @@ $(document).ready(function () {
             
             // Opens the modal
             $lyricsModal.modal("open");
+            //calling YouTube API
+            youtubeVideo(songArtistName, songName);
         });   
     };
 
@@ -702,6 +717,43 @@ $(document).ready(function () {
         };
     };
 
+    function youtubeVideo(songArtistName, songName) {
+        let APIKey = "AIzaSyCi8-fme3jt8JWOwsFM6LVR2EnO6R7m2fY";
+        let QueryURL = 'https://www.googleapis.com/youtube/v3/search';
+        var songVideo = ''; //Empty to pass in song name.
+        $.ajax({
+            cache: false,
+            data: $.extend({
+                key: APIKey,
+                q: `${songArtistName}+${songName}`, //songArtist / name value from Other API call
+            }, {
+                maxResults: 1,
+                type: 'video',
+                category: 'music',
+                videoEmbeddable: 'true',
+                part: 'snippet',
+                order: 'viewcount', //Gets most viewed
+            }),
+            dataType: 'json',
+            type: 'GET',
+            timeout: 3500,
+            url: QueryURL
+        }).then(function (videoData) {
+            console.log('ITSS PEWWWDIEEPIE');
+            console.log(videoData);
+            let videoObj = videoData.items[0].id.videoId;
+            // const etag = removeWrappedQuotes(videoObj);           
+            songVideo = `<iframe width="620" height="350" src="https://www.youtube.com/embed/${videoObj}">`;
+            console.log('MADE IT');
+            console.log(songVideo);
+            const $iFrame = $(songVideo);
+
+            $(".youtube-content").append($iFrame);
+
+        });
+    };
+
+
     //=============================================================
 
     //              On Clicks
@@ -725,7 +777,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document.body).on("click", ".collapsible-header", itunesSongAJAX);
+    // $(document.body).on("click", ".collapsible-header", itunesSongAJAX);
     $(".album-list").on("click", ".song", lyricsAJAX);
 
     // Needs notes

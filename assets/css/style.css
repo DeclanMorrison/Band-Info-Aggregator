@@ -228,23 +228,24 @@ body {
     position: fixed;
     font-family: 'Fjalla One';
     font-size: 100%;
+    top: -25vh;
 }
 .bg2{
     position: fixed;
-    top: 51vh;
+    top: 48vh;
     font-family: 'Roboto Slab';
     font-weight: 900;
     font-size: 100%;
 }
 .bg3{
     position: fixed;
-    top: 71vh;
+    top: 77vh;
     font-family: 'Noto Serif';
     font-size: 100%;
 }
 .bg1{
     position: fixed;
-    top: 28vh;
+    top: 12vh;
     font-family: 'Oleo Script';
     font-size: 100%;
 }

@@ -33,8 +33,8 @@ All the gathered information will fly into view. To search another band or artis
 
 ## Featured Team Members:
 ### - __Mason Hester__, Lead iTunes and Lyrics Wrangler
-### - __Cody Shaffer__, Lead YouTube and FireBase Wrangler
-### - __Jake Plaisted__, Lead Materialize and Style Wrangler
+### - __Jake Plaisted__, Lead YouTube and FireBase Wrangler
+### - __Cody Shaffer__, Lead Materialize and Style Wrangler
 ### - __Declan Morrison__, Team Lead and Team Wrangler
 
 ## How to install:

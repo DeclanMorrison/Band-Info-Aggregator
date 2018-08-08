@@ -432,14 +432,27 @@ $(document).ready(function () {
                         // Pushes the album name to a holding array
                         albumArray.push(value.collectionCensoredName);
 
-                        // Changes the text of the album div we are on to the name
-                        $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName).addClass("album-name truncate");
+                        // // Changes the text of the album div we are on to the name
+                        // $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName).addClass("album-name truncate");
 
-                        // Adds attributes for[album-name, album-length, album-index],
-                        $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-album-id", value.collectionId).attr("data-index", albumOnIndex).attr("data-load-state", "not-loaded").addClass("valign-wrapper");
+                        // // Adds attributes for[album-name, album-length, album-index],
+                        // $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName).attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-album-id", value.collectionId).attr("data-index", albumOnIndex).attr("data-load-state", "not-loaded").addClass("valign-wrapper");
 
-                        // Changes the src of the img to reflect the album name
-                        $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
+                        // // Changes the src of the img to reflect the album name
+                        // $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
+
+                        const $newAlbum = $(`
+                        <li class="album-list collection-item">
+                            <div class="collapsible-header album${albumOnIndex}Div valign-wrapper" data-album-name="${value.collectionCensoredName}" data-album-length="${value.trackCount}" data-index="${albumOnIndex}" data-album-id="${value.collectionId}" data-load-state="not-loaded">
+                                <img class="album${albumOnIndex}Img" src="${value.artworkUrl100}">
+                                <p class="album${albumOnIndex}Name album-name truncate">${value.collectionCensoredName}</p>
+                            </div>
+                            <div class="collapsible-body song${albumOnIndex}Div">
+
+                            </div>
+                        </li>`);
+
+                        $(".collapsible").append($newAlbum);
 
                         // Increments albumOnIndex to keep track of how many have been added
                         albumOnIndex++;
@@ -456,15 +469,28 @@ $(document).ready(function () {
                             // Pushes the album name to a holding array
                             albumArray.push(value.collectionCensoredName);
 
-                            // Changes the text to the censored name
-                            $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
+                            // // Changes the text to the censored name
+                            // $(".album" + albumOnIndex + "Name").text(value.collectionCensoredName);
 
-                            // Adds attributes for[album-name, album-length, album-index]
-                            $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName)
-                                .attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", albumOnIndex).attr("data-load-state", "not-loaded");
+                            // // Adds attributes for[album-name, album-length, album-index]
+                            // $(".album" + albumOnIndex + "Div").attr("data-album-name", value.collectionCensoredName)
+                            //     .attr("data-album-length", value.trackCount).attr("data-artist-name", value.artistName).attr("data-index", albumOnIndex).attr("data-load-state", "not-loaded");
 
-                            // Changes the src of the img to reflect the album name    
-                            $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
+                            // // Changes the src of the img to reflect the album name    
+                            // $(".album" + albumOnIndex + "Img").attr("src", value.artworkUrl100);
+
+                            const $newAlbum = $(`
+                            <li class="album-list collection-item">
+                                <div class="collapsible-header album${albumOnIndex}Div valign-wrapper" data-album-name="${value.collectionCensoredName}" data-album-length="${value.trackCount}" data-index="${albumOnIndex}" data-album-id="${value.collectionId}" data-load-state="not-loaded">
+                                    <img class="album${albumOnIndex}Img" src="${value.artworkUrl100}">
+                                    <p class="album${albumOnIndex}Name album-name truncate">${value.collectionCensoredName}</p>
+                                </div>
+                                <div class="collapsible-body song${albumOnIndex}Div">
+
+                                </div>
+                            </li>`);
+
+                            $(".collapsible").append($newAlbum);
 
                             // Increments albumOnIndex to keep track of how many have been added    
                             albumOnIndex++;
@@ -474,23 +500,23 @@ $(document).ready(function () {
             }
 
             // If weve added less than 5 albums after the scan
-            if(albumOnIndex < 5) {
-                // Loops until 5 things are added
-                for(i = albumOnIndex; i < 5; i++) {
-                    // Changes the text default message
-                    $(".album" + albumOnIndex + "Name").text("We couldn't find an album to put here");
+            // if(albumOnIndex < 5) {
+            //     // Loops until 5 things are added
+            //     for(i = albumOnIndex; i < 5; i++) {
+            //         // Changes the text default message
+            //         $(".album" + albumOnIndex + "Name").text("We couldn't find an album to put here");
 
-                    // Sets attributes to ""
-                    $(".album" + albumOnIndex + "Div").attr("data-album-name", "")
-                        .attr("data-album-length", "").attr("data-artist-name", "").attr("data-index", "").attr("data-load-state", "");
+            //         // Sets attributes to ""
+            //         $(".album" + albumOnIndex + "Div").attr("data-album-name", "")
+            //             .attr("data-album-length", "").attr("data-artist-name", "").attr("data-index", "").attr("data-load-state", "");
 
-                    // Changes the src of the img to "" 
-                    $(".album" + albumOnIndex + "Img").attr("src", "");
+            //         // Changes the src of the img to "" 
+            //         $(".album" + albumOnIndex + "Img").attr("src", "");
 
-                    // Increments albumOnIndex to keep track of how many have been added    
-                    albumOnIndex++;
-                }                
-            }
+            //         // Increments albumOnIndex to keep track of how many have been added    
+            //         albumOnIndex++;
+            //     }                
+            // }
 
             
             bandDB.ref('Artists').set({
@@ -503,7 +529,7 @@ $(document).ready(function () {
     }
 
     // Called when album is clicked
-    function itunesSongAJAX() {        
+    function itunesSongAJAX() {
         // Shorthand
         let $thisAlbum = $(this);
 
@@ -543,6 +569,7 @@ $(document).ready(function () {
 
                 // Shorthand for interacting with JSON
                 let songResults = parsedSongResponse.results;
+                console.log(songResults);
 
                 //Removes first index, which is album meta data
                 songResults.shift();
@@ -555,7 +582,7 @@ $(document).ready(function () {
                 $.each(songResults, function (index, value) {
                     // Adds content to manipulate for the collection
                     const $songCollectionItem = $("<li>");
-                    $songCollectionItem.addClass("collection-item");
+                    $songCollectionItem.addClass("collection-item song");
 
                     // Changes the Text to the song name
                     $songCollectionItem.text(value.trackCensoredName)
@@ -621,6 +648,7 @@ $(document).ready(function () {
         updateSearchStats();
         getArtistAMGID();
         mediaWikiSummaryAJAX();
+        $(".album-list").empty();
     });
 
     $('#search-term').each(function () {
@@ -636,8 +664,8 @@ $(document).ready(function () {
         });
     });
 
-    $(".collapsible-header").on("click", itunesSongAJAX);
-    $(".album-list").on("click", ".collection-item", lyricsAJAX)
+    $(document.body).on("click", ".collapsible-header", itunesSongAJAX);
+    $(".album-list").on("click", ".song", lyricsAJAX);
 
     // Needs notes
     $(".read-more").on("click", function(){
@@ -700,8 +728,9 @@ $(document).ready(function () {
                     // Calls the searches
                     updateSearchStats();
                     getArtistAMGID();
-                    mediaWikiSummaryAJAX();            
-                }
+                    mediaWikiSummaryAJAX();
+                    $(".album-list").empty();         
+                };
             });
         });
     });

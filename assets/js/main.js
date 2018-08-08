@@ -622,6 +622,9 @@ $(document).ready(function () {
         const $lyricsModal = $("#lyricsModal");
         const $lyricsPar = $(".lyricsPar");
 
+        //for youtube
+        const $youtubeContent = $(".youtube-content");
+
         // For getting the lyrics
         let lyricsQueryURL = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
 
@@ -640,6 +643,8 @@ $(document).ready(function () {
             
             // Opens the modal
             $lyricsModal.modal("open");
+            //calling Youtube API
+            youtubeVideo(songArtistName, songName);
         });   
     };
 
@@ -654,6 +659,42 @@ $(document).ready(function () {
             $("#search-btn").addClass("disabled");
             $(".collapsible").empty();
         };
+    };
+
+    function youtubeVideo(songArtistName, songName) {
+        let APIKey = "AIzaSyCi8-fme3jt8JWOwsFM6LVR2EnO6R7m2fY";
+        let QueryURL = 'https://www.googleapis.com/youtube/v3/search';
+        var songVideo = ''; //Empty to pass in song name.
+        $.ajax({
+            cache: false,
+            data: $.extend({
+                key: APIKey,
+                q: `${songArtistName} ${songName}`, //songArtist / name value from Other API call
+            }, {
+                maxResults: 1,
+                type: 'video',
+                category: 'music',
+                videoEmbeddable: 'true',
+                part: 'snippet',
+                order: 'viewcount', //Gets most viewed
+            }),
+            dataType: 'json',
+            type: 'GET',
+            timeout: 3500,
+            url: QueryURL
+        }).then(function (videoData) {
+            console.log('ITSS PEWWWDIEEPIE');
+            console.log(videoData);
+            let videoObj = videoData.items[0].id.videoId;
+            // const etag = removeWrappedQuotes(videoObj);           
+            songVideo = `<iframe width="620" height="350" src="https://www.youtube.com/embed/${videoObj}">`;
+            console.log('MADE IT');
+            console.log(songVideo);
+            const $iFrame = $(songVideo);
+
+            $(".youtube-content").append($iFrame);
+
+        });
     };
 
     //=============================================================

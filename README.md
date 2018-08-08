@@ -1,77 +1,54 @@
-# REMEMBER TO BRANCH THE REPO ANY TIME YOU WANT TO IMPLEMENT A FEATURE
-# [HERE IS A LINK TO THE TRELLO BOARD](https://trello.com/b/h4YFbCJP/band-info-aggregator)
+# [Google Minus](https://declanmorrison.github.io/Band-Info-Aggregator/)
 
+## About this project:
 
-# First Project Proposal
+This project utilizes several API's in order to pull together information on the chosen band. Current features include:
+1. A list of Top 5 most searched artists.
+1. Short Biography, with ability to read more.
+1. A picture of the band/artist or most popular album, depending on availability.
+1. A list of 5 albums (or less depending on availability) ranked by popularity.
+1. An accordion menu that will display songs under the selected album. Songs are listed in order of appearance on album.
+1. A pop-up that displays the most relevant YouTube video and song lyrics (depending on availability) when a song is clicked.
+1. Smooth-as-butter animations.
+1. A tastefully animated background.
 
+## How to use:
+Upon opening the application, you will be greeted by a tastefully minimalist popular search engine-esque user interface. Simply type in the name of the band or artist you would like to learn more about, and click the search button, or press enter! (It's like magic).
 
-### Overall Idea:
-Utilize user input to aggregate band information and music from several sources using APIs, such as Spotify, Soundcloud, Wikipedia and YouTube. Users will be able to save their favorite bands, and quickly reference them when returning to a page.
+All the gathered information will fly into view. To search another band or artist, simply type their name into the search bar, which has conveniently moved itself to the top of the page, and search!
 
+## Featured Technologies:
+* Silky Smooth animations courtesy of [Animate.CSS](https://daneden.github.io/animate.css/)
+* Cool as heck button animations courtesy of [Hover.CSS](http://ianlunn.github.io/Hover/)
+* Dope CSS Framework courtesy of [Materialize.CSS](https://materializecss.com/)
+* Bio and (sometimes) Picture courtesy of [MediaWIKI API](https://www.mediawiki.org/wiki/API:Main_page)
+* Slick 'N' quick albums and songs courtesy of [iTunes Search API](https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/)
+* Great personality and lyrics courtesy of [Lyrics.OVH](https://lyricsovh.docs.apiary.io/#)
+* YouTube videos courtesy of ~~Vimeo~~ [YouTube](https://developers.google.com/youtube/)
+* I'm-running-out-of-adjectivesy Top 5 videos courtesy of [Firebase](https://firebase.google.com/)
+* Wicked-Cool text that fits the contaier coutesy of [Fitty.js](https://github.com/rikschennink/fitty)
+* The will to carry on courtesy of [jQuery](https://jquery.com/)
+* Seriously, what would we do without :heavy_dollar_sign: jQuery :heavy_dollar_sign:?
 
-### Planned Features:
+## Featured Team Members:
+### - __Mason Hester__, Lead iTunes and Lyrics Wrangler
+### - __Cody Shaffer__, Lead YouTube and FireBase Wrangler
+### - __Jake Plaisted__, Lead Materialize and Style Wrangler
+### - __Declan Morrison__, Team Lead and Team Wrangler
 
-- search box
-- spotify API
-- soundcloud API
-- Wikipedia API
-- YouTube API
-- Saving bands
+## How to install:
+Simply clone the master branch of the GitHub repository, and open in your favorite browser (Chrome)!
 
+Alternatively, you can see the site live, [Here](https://declanmorrison.github.io/Band-Info-Aggregator/)!
+###### (Cross-browser compatibility has not been tested, and we do not assume any responsibility for the need of eye bleach due to other browsers destroying our fragile and meticulously crafted design. (I blame Microsoft))
 
-### Front-End Team:
-- Declan Morrison
-- Cody Shaffer
+## FAQ:
+_Aren't you afraid of Google suing you?_: __No. I am not afraid of anything. I learned from the novel Dune that fear is merely a figment of the mind.__
 
-### Back-End Team:
-- Mason Hester
-- Jack Plaisted
+## Tested
+* Google Chrome
+* That's it
+* Seriously
 
-
-### Requirements:
-
-- Must use at least two APIS
-
-- Must use AJAX to pull data
-
-- Must utilize at least one new Library or technology that we haven't duscussed.
-
-- Must have a polished Front-End and UI
-
-- Must meet good quality standards(scoping, naming, whitespace)
-
-- Must not use alerts, confirms or prompts, can use modals, 
-
-- Must have some sort of repeating element, (Table, columns, etc)
-
-- Must use Boostrap or Alternatice CSS Framworke(Materialize?)
-
-- Must be Deployed (Github Pages)
-
-- Must have User Input Validation()
-
-### Nice to Haves:
-
-- Utilize Firebase for Persistent Data Storage (Consider this basically a requirement).
-
-- Mobile Responsive
-
-- Use an alternatie CSS Framework like Materialize
-
-### Presentation Requirements:
-
-- 10 minute presentaion
-
-- This will be a formal presentation
-
-- One in which you will explain in detail:
-
-### API Suggestions:
-
-- Allows CORS
-
-- Simple or no authentication
-
-- JSON response returned
-
-- Well documented
+## Licence
+* Drivers

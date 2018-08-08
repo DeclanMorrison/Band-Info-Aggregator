@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700|Roboto+Slab:100,400,700|Roboto:100,400,900|Fjalla+One');
-
+@import url('https://fonts.googleapis.com/css?family=Anton|Noto+Serif|Oleo+Script|Pacifico');
 
 /* Colors
  - White: #F5F5F5, grey lighten-4
@@ -198,6 +198,48 @@ body {
     font-weight: 900;
     background-color: #ff5252;
     color: #F5F5F5;
+}
+
+.background{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    
+    white-space: nowrap;
+    z-index: -999;
+    color: #DFDFDF;
+}
+
+.bg0{
+    position: fixed;
+    font-family: 'Fjalla One';
+    font-size: 100%;
+}
+.bg2{
+    position: fixed;
+    top: 51vh;
+    font-family: 'Roboto Slab';
+    font-weight: 900;
+    font-size: 100%;
+}
+.bg3{
+    position: fixed;
+    top: 71vh;
+    font-family: 'Noto Serif';
+    font-size: 100%;
+}
+.bg1{
+    position: fixed;
+    top: 28vh;
+    font-family: 'Oleo Script';
+    font-size: 100%;
+}
+.bg4{
+    position: fixed;
+    top: 95vh;
+    font-family: 'Anton';
+    font-size: 100%;
 }
 
 /* These pieces of code hide the scrollbar, taken from Stack Overflow, 

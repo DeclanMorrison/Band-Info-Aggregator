@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let hasSearched = false;
     setInterval(function(){
         if ($("#search-term").val() === "" && (!($("#search-btn").hasClass("disabled")))){   
             console.error("Nice try bud, but this button is staying disabled!");       
@@ -110,7 +111,7 @@ $(document).ready(function () {
     // Called when search button is clicked
     function updateSearchStats() {
         // Stops the page from refreshing on form input
-        event.preventDefault();
+        // event.preventDefault();
     
         // Grabs the search term from the user
         let searchTerm = $('#search-term').val().toLowerCase().trim();
@@ -161,18 +162,48 @@ $(document).ready(function () {
         $(".title").addClass("min");
 
         // removes the hide from the objects, fades them in
-        $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
-        $(".band-name").addClass("fadeInRightBig").removeClass("hide");
+        $(".band-image").removeClass("hide fadeOutLeftBig").addClass("fadeInLeftBig");
+        $(".band-name").removeClass("hide fadeOutRightBig").addClass("fadeInRightBig");
+        $(".bg0, .bg2, .bg4").removeClass("hide fadeOutLeftBig").addClass("fadeInLeftBig");
+        $(".bg1, .bg3").removeClass("hide fadeOutRightBig").addClass("fadeInRightBig");
         fitty(".band-name",{maxSize: 325});
+        fitty(".bg0");
+        fitty(".bg1");
+        fitty(".bg2");
+        fitty(".bg3");
+        fitty(".bg4");
 
         // Animations for coming in
         setTimeout(function () {
-            $(".bio").addClass("fadeInRightBig").removeClass("hide");
+            $(".bio").addClass("fadeInRightBig").removeClass("hide fadeOutRightBig");
             setTimeout(function () {
-                $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+                $(".collapsible").addClass("fadeInUpBig").removeClass("hide fadeOutDownBig");
                 setTimeout(function () {
                     $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
                 }, 250);
+            }, 250);
+        }, 250);
+    };
+
+    const animateOut = () => {
+
+        // removes the hide from the objects, fades them in
+        $(".band-image").removeClass("fadeInLeftBig").addClass("fadeOutLeftBig");
+        $(".band-name").removeClass("fadeInRightBig").addClass("fadeOutRightBig");
+        $(".bg0, .bg2, .bg4").removeClass("fadeInLeftBig").addClass("fadeOutLeftBig");
+        $(".bg1, .bg3").removeClass("fadeInRightBig").addClass("fadeOutRightBig");
+        fitty(".band-name",{maxSize: 325});
+        fitty(".bg0");
+        fitty(".bg1");
+        fitty(".bg2");
+        fitty(".bg3");
+        fitty(".bg4");
+
+        // Animations for coming in
+        setTimeout(function () {
+            $(".bio").removeClass("fadeInRightBig").addClass("fadeOutRightBig");
+            setTimeout(function () {
+                $(".collapsible").removeClass("fadeInUpBig").addClass("fadeOutDownBig");
             }, 250);
         }, 250);
     };
@@ -210,9 +241,6 @@ $(document).ready(function () {
                     $(".artist-image").attr("src", ($(".album0Img").attr("src")));
                 }
             };
-
-            // Animates these in            
-            animateIn();
         });
     };
 
@@ -222,6 +250,7 @@ $(document).ready(function () {
         if(page === undefined){
             // Grabs the user input
             let artistInput = $("#search-term").val().trim();
+            $(".bg0, .bg1, .bg2, .bg3, .bg4").text(artistInput);
 
             // Sends it to clean the input
             let cleanedInput = wikiParseURL(artistInput);
@@ -647,12 +676,25 @@ $(document).ready(function () {
         if ($("#search-term").val() === ""){
             M.toast({html: 'You must enter a search term!', classes: "toast-warning"});
             $("#search-btn").addClass("disabled");
-        }else{
+        }else if (!hasSearched){
             updateSearchStats();
             getArtistAMGID();
             mediaWikiSummaryAJAX();
             $("#search-btn").addClass("disabled");
             $(".collapsible").empty();
+            animateIn();
+            hasSearched = true;
+        }else if (hasSearched){
+            animateOut();
+            setTimeout(function(){
+                updateSearchStats();
+                getArtistAMGID();
+                mediaWikiSummaryAJAX();
+                $("#search-btn").addClass("disabled");
+                $(".collapsible").empty();
+                animateIn();    
+            }, 1000);
+            
         };
     };
 

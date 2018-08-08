@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700|Roboto+Slab:100,400,700|Roboto:100,400,900|Fjalla+One');
 
+
 /* Colors
  - White: #F5F5F5, grey lighten-4
  - Black: #212121, grey darken-4
@@ -127,9 +128,9 @@ body {
 }
 
 .footer-copyright{
-    position: relative;
+    position: fixed;
+    bottom: 2%;
     left: 50%;
-    bottom: 0;
     margin-left: -55.69px;
 }
 
@@ -166,7 +167,6 @@ body {
     font-weight: 400;
     font-size: 18px;
     line-height: 25px;
-
 }
 
 .bio .read-more { 
@@ -192,6 +192,7 @@ body {
     font-weight: 700;
     font-size: 30px;
 }
+
 /* These pieces of code hide the scrollbar, taken from Stack Overflow, 
 here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll */
 

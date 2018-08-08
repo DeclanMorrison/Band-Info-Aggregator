@@ -193,6 +193,13 @@ body {
     font-size: 30px;
 }
 
+.toast-warning{
+    font-family: 'Roboto Slab';
+    font-weight: 900;
+    background-color: #ff5252;
+    color: #F5F5F5;
+}
+
 /* These pieces of code hide the scrollbar, taken from Stack Overflow, 
 here: https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll */
 

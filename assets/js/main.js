@@ -1,4 +1,11 @@
 $(document).ready(function () {
+    setInterval(function(){
+        if ($("#search-term").val() === "" && (!($("#search-btn").hasClass("disabled")))){   
+            console.error("Nice try bud, but this button is staying disabled!");       
+            $("#search-btn").addClass("disabled");
+        };
+    },1);
+    
     //=============================================================
 
     // Ctrl + F to find "Temporary", These will be things that still need changed to work with final product
@@ -104,7 +111,7 @@ $(document).ready(function () {
     function updateSearchStats() {
         // Stops the page from refreshing on form input
         event.preventDefault();
-
+    
         // Grabs the search term from the user
         let searchTerm = $('#search-term').val().toLowerCase().trim();
 
@@ -132,9 +139,9 @@ $(document).ready(function () {
                 console.log(error);
             }else {
                 console.log("stats saved to database");
-            }
+            };
         });
-    }
+    };
 
     // Called within the wiki ajax call
     const wikiParseURL = (str) => {
@@ -146,7 +153,7 @@ $(document).ready(function () {
 
         // Returns the str
         return str.trim();
-    }
+    };
     
     // Called in the wiki ajax call
     const animateIn = () => {
@@ -277,9 +284,7 @@ $(document).ready(function () {
                     };
                 };
             });
-        }
-        
-        else if(page !== undefined) {
+        }else if(page !== undefined) {
             // Query URL
             let wikiQueryURL = `https://cors-anywhere.herokuapp.com/en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=true&titles=${page}`
 
@@ -456,8 +461,8 @@ $(document).ready(function () {
 
                         // Increments albumOnIndex to keep track of how many have been added
                         albumOnIndex++;
-                    }
-                })
+                    };
+                });
 
                 // If weve added less than 5 albums (no need to re-scan if we already have 5)   
                 if (albumOnIndex < 5 && $.inArray(albumResults.collectionCensoredName, albumArray)) {
@@ -494,10 +499,10 @@ $(document).ready(function () {
 
                             // Increments albumOnIndex to keep track of how many have been added    
                             albumOnIndex++;
-                        }
-                    })
-                }
-            }
+                        };
+                    });
+                };
+            };
 
             // If weve added less than 5 albums after the scan
             // if(albumOnIndex < 5) {
@@ -526,7 +531,7 @@ $(document).ready(function () {
             // Cleans the search bar at end of on clicks to let the info pass first
             $('#search-term').val('');
         });        
-    }
+    };
 
     // Called when album is clicked
     function itunesSongAJAX() {
@@ -599,14 +604,14 @@ $(document).ready(function () {
                 // Changes attr to loaded (Prevents constant reloading)
                 $thisAlbum.attr("data-load-state", "loaded");
             });
-        }
-    }
+        };
+    };
     
     // Needs notes
     const sanitizeString = (str) => {
         str = str.replace(/[^a-z0-9 \_-]/gim,"");
         return str.trim();
-    }
+    };
 
     // Called when song is clicked
     function lyricsAJAX() {
@@ -636,7 +641,20 @@ $(document).ready(function () {
             // Opens the modal
             $lyricsModal.modal("open");
         });   
-    };    
+    };
+
+    const allInOne = () => {
+        if ($("#search-term").val() === ""){
+            M.toast({html: 'You must enter a search term!', classes: "toast-warning"});
+            $("#search-btn").addClass("disabled");
+        }else{
+            updateSearchStats();
+            getArtistAMGID();
+            mediaWikiSummaryAJAX();
+            $("#search-btn").addClass("disabled");
+            $(".collapsible").empty();
+        };
+    };
 
     //=============================================================
 
@@ -645,10 +663,7 @@ $(document).ready(function () {
     //=============================================================
 
     $("#search-btn").on("click", function () {
-        updateSearchStats();
-        getArtistAMGID();
-        mediaWikiSummaryAJAX();
-        $(".album-list").empty();
+        allInOne();
     });
 
     $('#search-term').each(function () {
@@ -657,9 +672,9 @@ $(document).ready(function () {
         elem.bind("changes input paste", function (event) {
             // If value has changed...
             if (elem.val() != "") {
-                $(".c-btn").removeClass("disabled").addClass("hvr-icon-grow");
+                $("#search-btn").removeClass("disabled").addClass("hvr-icon-grow");
             } else {
-                $(".c-btn").addClass("disabled").removeClass("hvr-icon-grow");
+                $("#search-btn").addClass("disabled").removeClass("hvr-icon-grow");
             };
         });
     });
@@ -726,10 +741,7 @@ $(document).ready(function () {
                 // If enter is pressed
                 if(e.which == 10 || e.which == 13) {
                     // Calls the searches
-                    updateSearchStats();
-                    getArtistAMGID();
-                    mediaWikiSummaryAJAX();
-                    $(".album-list").empty();         
+                    allInOne();       
                 };
             });
         });

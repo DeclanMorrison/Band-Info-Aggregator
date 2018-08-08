@@ -636,7 +636,15 @@ $(document).ready(function () {
             // Opens the modal
             $lyricsModal.modal("open");
         });   
-    };    
+    };
+
+    const allInOne = () => {
+        updateSearchStats();
+        getArtistAMGID();
+        mediaWikiSummaryAJAX();
+        $(".album-list").empty();
+        $("#search-term").empty();
+    } 
 
     //=============================================================
 
@@ -645,10 +653,7 @@ $(document).ready(function () {
     //=============================================================
 
     $("#search-btn").on("click", function () {
-        updateSearchStats();
-        getArtistAMGID();
-        mediaWikiSummaryAJAX();
-        $(".album-list").empty();
+        allInOne();
     });
 
     $('#search-term').each(function () {
@@ -726,10 +731,7 @@ $(document).ready(function () {
                 // If enter is pressed
                 if(e.which == 10 || e.which == 13) {
                     // Calls the searches
-                    updateSearchStats();
-                    getArtistAMGID();
-                    mediaWikiSummaryAJAX();
-                    $(".album-list").empty();         
+                    allInOne();       
                 };
             });
         });

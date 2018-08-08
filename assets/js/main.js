@@ -1,7 +1,8 @@
 $(document).ready(function () {
+    let hasSearched = false;
     setInterval(function(){
         if ($("#search-term").val() === "" && (!($("#search-btn").hasClass("disabled")))){   
-            console.error("Nice try bud, but this button is staying disabled!");       
+            //console.error("Nice try bud, but this button is staying disabled!");       
             $("#search-btn").addClass("disabled");
         };
     },1);
@@ -84,7 +85,7 @@ $(document).ready(function () {
 
     // Shows current snapshot
     // firebase.database().ref('searches/').on('value', (snapshot) => {
-    //     console.log(snapshot);
+    //     //console.log(snapshot);
     // });
 
 
@@ -110,7 +111,7 @@ $(document).ready(function () {
     // Called when search button is clicked
     function updateSearchStats() {
         // Stops the page from refreshing on form input
-        event.preventDefault();
+        // event.preventDefault();
     
         // Grabs the search term from the user
         let searchTerm = $('#search-term').val().toLowerCase().trim();
@@ -136,9 +137,9 @@ $(document).ready(function () {
             artist: titleSearchTerm
         }, (error)=> {
             if(error) {
-                console.log(error);
+                //console.log(error);
             }else {
-                console.log("stats saved to database");
+                //console.log("stats saved to database");
             };
         });
     };
@@ -161,18 +162,48 @@ $(document).ready(function () {
         $(".title").addClass("min");
 
         // removes the hide from the objects, fades them in
-        $(".band-image").addClass("fadeInLeftBig").removeClass("hide");
-        $(".band-name").addClass("fadeInRightBig").removeClass("hide");
+        $(".band-image").removeClass("hide fadeOutLeftBig").addClass("fadeInLeftBig");
+        $(".band-name").removeClass("hide fadeOutRightBig").addClass("fadeInRightBig");
+        $(".bg0, .bg2, .bg4").removeClass("hide fadeOutLeftBig").addClass("fadeInLeftBig");
+        $(".bg1, .bg3").removeClass("hide fadeOutRightBig").addClass("fadeInRightBig");
         fitty(".band-name",{maxSize: 325});
+        fitty(".bg0");
+        fitty(".bg1");
+        fitty(".bg2");
+        fitty(".bg3");
+        fitty(".bg4");
 
         // Animations for coming in
         setTimeout(function () {
-            $(".bio").addClass("fadeInRightBig").removeClass("hide");
+            $(".bio").addClass("fadeInRightBig").removeClass("hide fadeOutRightBig");
             setTimeout(function () {
-                $(".collapsible").addClass("fadeInUpBig").removeClass("hide");
+                $(".collapsible").addClass("fadeInUpBig").removeClass("hide fadeOutDownBig");
                 setTimeout(function () {
                     $(".footer-copyright").addClass("fadeInUpBig").removeClass("hide");
                 }, 250);
+            }, 250);
+        }, 250);
+    };
+
+    const animateOut = () => {
+
+        // removes the hide from the objects, fades them in
+        $(".band-image").removeClass("fadeInLeftBig").addClass("fadeOutLeftBig");
+        $(".band-name").removeClass("fadeInRightBig").addClass("fadeOutRightBig");
+        $(".bg0, .bg2, .bg4").removeClass("fadeInLeftBig").addClass("fadeOutLeftBig");
+        $(".bg1, .bg3").removeClass("fadeInRightBig").addClass("fadeOutRightBig");
+        fitty(".band-name",{maxSize: 325});
+        fitty(".bg0");
+        fitty(".bg1");
+        fitty(".bg2");
+        fitty(".bg3");
+        fitty(".bg4");
+
+        // Animations for coming in
+        setTimeout(function () {
+            $(".bio").removeClass("fadeInRightBig").addClass("fadeOutRightBig");
+            setTimeout(function () {
+                $(".collapsible").removeClass("fadeInUpBig").addClass("fadeOutDownBig");
             }, 250);
         }, 250);
     };
@@ -210,9 +241,6 @@ $(document).ready(function () {
                     $(".artist-image").attr("src", ($(".album0Img").attr("src")));
                 }
             };
-
-            // Animates these in            
-            animateIn();
         });
     };
 
@@ -222,6 +250,7 @@ $(document).ready(function () {
         if(page === undefined){
             // Grabs the user input
             let artistInput = $("#search-term").val().trim();
+            $(".bg0, .bg1, .bg2, .bg3, .bg4").text(artistInput);
 
             // Sends it to clean the input
             let cleanedInput = wikiParseURL(artistInput);
@@ -238,7 +267,7 @@ $(document).ready(function () {
                 method: "GET",
                 datatype: "json",
             }).then(function (wikiResponse) {
-                console.log(wikiResponse);
+                //console.log(wikiResponse);
                 // Creates variable for the pageID and the extract
                 const pageID = (Object.values(wikiResponse.query.pages)[0]).pageid;
                 const extract = (Object.values(wikiResponse.query.pages)[0]).extract;
@@ -247,6 +276,7 @@ $(document).ready(function () {
                 if(extract === "") {
                     // Adds The infront (more likely to find);
                     cleanedInput = "The%20" + cleanedInput;
+                    $(".band-name").text((Object.values(wikiResponse.query.pages)[0]).title);
 
                     // Passes it back through to see if something is found (goes to else);
                     mediaWikiSummaryAJAX(cleanedInput);
@@ -393,6 +423,8 @@ $(document).ready(function () {
 
         $(".collapsible-body").attr("style", "");
         $(".album-list").removeClass("active");
+        
+
 
         // Grabs the value of the search
         let artistInput = $("#search-term").val().trim();
@@ -406,7 +438,7 @@ $(document).ready(function () {
         // let albumQueryURL = `https://itunes.apple.com/search?media=music&limit=15&entity=album&term=${artistInput}`
 
         // For ID search
-        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=15`
+        let albumQueryURL = `https://cors-anywhere.herokuapp.com/itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album`
 
         // For ID search (offline)
         //let albumQueryURL = `https://itunes.apple.com/lookup?amgArtistId=${artistID}&entity=album&limit=15`
@@ -423,8 +455,12 @@ $(document).ready(function () {
             // Shorthand for navigating the object
             let albumResults = parsedAlbumResponse.results;
 
-            //Removes album metadata, first index of array
-            albumResults.shift();
+            //Removes any non-albums that were returned
+            albumResults.forEach(function(value, index){
+                if (value.wrapperType !== "collection"){
+                    albumResults.splice(index, 1);
+                };
+            });
 
             // If there are album results
             if(albumResults !== 0) {
@@ -458,6 +494,8 @@ $(document).ready(function () {
                         </li>`);
 
                         $(".collapsible").append($newAlbum);
+                        $newAlbum.addClass("hvr-grow-shadow").addClass("col s12");
+                        itunesSongAJAX(`album${albumOnIndex}Div`);
 
                         // Increments albumOnIndex to keep track of how many have been added
                         albumOnIndex++;
@@ -496,6 +534,8 @@ $(document).ready(function () {
                             </li>`);
 
                             $(".collapsible").append($newAlbum);
+                            itunesSongAJAX(`album${albumOnIndex}Div`);
+                            
 
                             // Increments albumOnIndex to keep track of how many have been added    
                             albumOnIndex++;
@@ -534,9 +574,12 @@ $(document).ready(function () {
     };
 
     // Called when album is clicked
-    function itunesSongAJAX() {
+    function itunesSongAJAX(album) {
         // Shorthand
-        let $thisAlbum = $(this);
+        let $thisAlbum = $(`.${album}`);
+        // let $thisAlbum = $(this);
+        //console.log($thisAlbum);
+        // let $thisAlbum = $(this);
 
         // If the information has not already been loaded
         if($thisAlbum.attr("data-load-state") === "not-loaded") {
@@ -574,7 +617,7 @@ $(document).ready(function () {
 
                 // Shorthand for interacting with JSON
                 let songResults = parsedSongResponse.results;
-                console.log(songResults);
+                //console.log(songResults);
 
                 //Removes first index, which is album meta data
                 songResults.shift();
@@ -622,6 +665,9 @@ $(document).ready(function () {
         const $lyricsModal = $("#lyricsModal");
         const $lyricsPar = $(".lyricsPar");
 
+        //for youtube
+        $(".youtube-content").empty();
+
         // For getting the lyrics
         let lyricsQueryURL = `https://api.lyrics.ovh/v1/${songArtistName}/${songName}`;
 
@@ -635,11 +681,14 @@ $(document).ready(function () {
                 $lyricsModal.modal("open");
             }
         }).then(function (lyricsResponse) {
+
             // Changes the text to the lyrics
             $lyricsPar.text(lyricsResponse.lyrics)
             
             // Opens the modal
             $lyricsModal.modal("open");
+            //calling YouTube API
+            youtubeVideo(songArtistName, songName);
         });   
     };
 
@@ -647,14 +696,64 @@ $(document).ready(function () {
         if ($("#search-term").val() === ""){
             M.toast({html: 'You must enter a search term!', classes: "toast-warning"});
             $("#search-btn").addClass("disabled");
-        }else{
+        }else if (!hasSearched){
             updateSearchStats();
             getArtistAMGID();
             mediaWikiSummaryAJAX();
             $("#search-btn").addClass("disabled");
             $(".collapsible").empty();
+            animateIn();
+            hasSearched = true;
+        }else if (hasSearched){
+            animateOut();
+            setTimeout(function(){
+                updateSearchStats();
+                getArtistAMGID();
+                mediaWikiSummaryAJAX();
+                $("#search-btn").addClass("disabled");
+                $(".collapsible").empty();
+                animateIn();    
+            }, 1000);
+            
         };
     };
+
+    function youtubeVideo(songArtistName, songName) {
+        let APIKey = "AIzaSyCi8-fme3jt8JWOwsFM6LVR2EnO6R7m2fY";
+        let QueryURL = 'https://www.googleapis.com/youtube/v3/search';
+        var songVideo = ''; //Empty to pass in song name.
+        $.ajax({
+            cache: false,
+            data: $.extend({
+                key: APIKey,
+                q: `${songName} ${songArtistName}`, //  ${songArtistName} s ongArtist / name value from Other API call
+            }, {
+                maxResults: 1,
+                type: 'video',
+                category: 'music',
+                videoEmbeddable: 'true',
+                part: 'snippet',
+                //order: 'viewcount', //Gets most viewed
+            }),
+            dataType: 'json',
+            type: 'GET',
+            timeout: 3500,
+            url: QueryURL
+        }).then(function (videoData) {
+            console.log('ITSS PEWWWDIEEPIE');
+            console.log(videoData);
+            let videoObj = videoData.items[0].id.videoId;
+            // const etag = removeWrappedQuotes(videoObj);           
+            songVideo = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoObj}" class="youtube-iframe">`;
+            console.log('MADE IT');
+            console.log(songVideo);
+            const $iFrame = $(songVideo);
+
+            $(".youtube-content").append($iFrame);
+            $(".youtube-iframe").attr("height", `${($(".youtube-iframe").width())/(1.777778)}px`);
+        });
+    };
+
 
     //=============================================================
 
@@ -679,7 +778,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document.body).on("click", ".collapsible-header", itunesSongAJAX);
+    // $(document.body).on("click", ".collapsible-header", itunesSongAJAX);
     $(".album-list").on("click", ".song", lyricsAJAX);
 
     // Needs notes
@@ -727,6 +826,14 @@ $(document).ready(function () {
         };  
     });
 
+    $(document.body).on("mouseenter", ".album-list", function () {
+        $(this).css("z-index", 500);
+    });
+
+    $(document.body).on("mouseleave", ".album-list", function () {
+        $(this).css("z-index", 0);
+    });
+
     //=============================================================
 
     //              Instantly Called
@@ -746,7 +853,12 @@ $(document).ready(function () {
             });
         });
     });
+    $(window).resize(function(){
+        $(".youtube-iframe").attr("height", `${($(".youtube-iframe").width())/(1.777778)}px`);
+    });
 });
+
+
 
 //=============================================================
 
